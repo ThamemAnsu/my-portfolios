@@ -59,7 +59,7 @@ const About: React.FC = () => {
                 <div className="absolute inset-0 bg-secondary/20 rounded"></div>
                 <img 
                   src="/profile.jpg" 
-                  alt="Thamem Ansu" 
+                  alt="Thamem Ansari" 
                   className="absolute inset-0 w-full h-full object-cover rounded z-10"
                 />
               </div>

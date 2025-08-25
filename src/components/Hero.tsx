@@ -32,7 +32,7 @@ const Hero: React.FC = () => {
           className="max-w-3xl"
         >
           <p className="text-secondary mb-4">Hi, my name is</p>
-          <h1 className="text-4xl md:text-6xl font-bold text-lightest mb-2">Thamem Ansu.</h1>
+          <h1 className="text-4xl md:text-6xl font-bold text-lightest mb-2">Thamem Ansari.</h1>
           <h2 className="text-3xl md:text-5xl font-bold text-light mb-6">
             I'm a <span className="text-secondary">{text}</span>
             <span className="animate-blink">|</span>
