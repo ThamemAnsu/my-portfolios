@@ -41,7 +41,7 @@ const Navbar: React.FC = () => {
             duration={500} 
             className="text-2xl font-bold text-secondary cursor-pointer"
           >
-            Thamem<span className="text-lightest">Ansu</span>
+            Thamem<span className="text-lightest">Ansari</span>
           </Link>
           
           {/* Desktop Menu */}

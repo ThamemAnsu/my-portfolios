@@ -15,23 +15,20 @@ const About: React.FC = () => {
           
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
-              <p className="mb-4">
-                Hello! I'm Thamem, a passionate frontend developer with expertise in building 
-                responsive and performant web applications. My journey in web development 
-                started during my university years, and I've been hooked ever since.
-              </p>
-              <p className="mb-4">
-                I enjoy working with modern JavaScript frameworks like React, and I'm always
-                eager to learn new technologies. The fast-paced nature of web development
-                keeps me constantly learning and improving my skills.
-              </p>
-              <p className="mb-4">
-                When I'm not coding, you can find me exploring new hiking trails, reading tech blogs,
-                or experimenting with new recipes in the kitchen.
-              </p>
-              <p>
-                Here are a few technologies I've been working with recently:
-              </p>
+            <p className="mb-4">
+  I'm Thamem Ansari, a results-driven Junior Developer specializing in 
+  AI-powered applications and full-stack development. I have hands-on 
+  experience in building scalable voice AI systems, implementing 
+  enterprise-grade SSO solutions, and creating intelligent automation workflows.
+</p>
+<p className="mb-4">
+  My expertise lies in the MERN stack, modern AI frameworks like LangChain, 
+  Whisper STT, and OCR systems, along with strong cloud and DevOps experience. 
+  I’m passionate about solving real-world problems using technology, deploying 
+  production applications, and constantly learning to stay ahead in this 
+  fast-paced field.
+</p>
+
               <ul className="grid grid-cols-2 mt-4">
                 <li className="flex items-center mb-2">
                   <span className="text-secondary mr-2">▹</span> React

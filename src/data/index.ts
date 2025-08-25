@@ -1,75 +1,95 @@
 // src/data/index.ts
 import { Project, Skill, Experience, Education } from '../types';
 
-export const projects: Project[] = [
+export const projects: Project[] =[
   {
     id: 1,
-    title: "Personal Portfolio",
-    description: "A modern portfolio website built with React, TypeScript, and Tailwind CSS.",
-    technologies: ["React", "TypeScript", "Tailwind CSS", "GitHub Pages"],
-    githubUrl: "https://github.com/ThamemAnsu/my-portfolio",
-    liveUrl: "https://thamemansu.github.io/my-portfolio",
-    image: "/project1.jpg"
+    title: "AI-Powered Voice Conversation Agent",
+    description: "Enterprise-grade real-time voice chatbot processing 500+ daily interactions.",
+    technologies: ["React", "Node.js", "Whisper STT", "LangChain", "Supabase"],
+    githubUrl: "https://github.com/your-repo",
+    liveUrl: "",
+    image: "/projects/voice-ai.jpg"
   },
   {
     id: 2,
-    title: "E-commerce Dashboard",
-    description: "A responsive dashboard for e-commerce analytics with user authentication and real-time data visualization.",
-    technologies: ["React", "Redux", "Firebase", "Chart.js"],
-    githubUrl: "https://github.com/ThamemAnsu/ecommerce-dashboard",
-    image: "/project2.jpg"
+    title: "Advanced SSO Authentication Platform",
+    description: "Developed using Supabase Edge Functions, later upgraded to Authentik-based solution.",
+    technologies: ["Supabase", "Next.js", "Node.js", "Authentik"],
+    githubUrl: "",
+    liveUrl: "",
+    image: "/projects/sso.jpg"
   },
   {
     id: 3,
-    title: "Weather Application",
-    description: "A weather application that provides real-time forecasts based on user location or search queries.",
-    technologies: ["React", "OpenWeather API", "Styled Components"],
-    githubUrl: "https://github.com/ThamemAnsu/weather-app",
-    liveUrl: "https://thamemansu-weather.netlify.app",
-    image: "/project3.jpg"
-  }
+    title: "Intelligent Document Processing System",
+    description: "AI-powered OCR pipeline processing multiple document formats.",
+    technologies: ["OCR Models", "Python", "Flask", "Docker"],
+    githubUrl: "",
+    liveUrl: "",
+    image: "/projects/ocr.jpg"
+  },
+  {
+    id: 4,
+    title: "Interactive Quiz Application",
+    description: "Full-stack quiz platform using React, Supabase, and Lovable AI.",
+    technologies: ["React", "Supabase", "AI"],
+    githubUrl: "",
+    liveUrl: "",
+    image: "/projects/quiz.jpg"
+  },
+  {
+    id: 5,
+    title: "WhatsApp Business Automation",
+    description: "Designed automated customer workflows using Turn.io and Meta Flow.",
+    technologies: ["Turn.io", "Meta Flow", "Node.js"],
+    githubUrl: "",
+    liveUrl: "",
+    image: "/projects/whatsapp.jpg"
+  },
 ];
 
 export const skills: Skill[] = [
-  { name: "HTML", level: 90, category: "frontend" },
-  { name: "CSS", level: 85, category: "frontend" },
-  { name: "JavaScript", level: 88, category: "frontend" },
+  { name: "JavaScript", level: 90, category: "frontend" },
+  { name: "React.js", level: 85, category: "frontend" },
   { name: "TypeScript", level: 80, category: "frontend" },
-  { name: "React", level: 85, category: "frontend" },
-  { name: "Tailwind CSS", level: 80, category: "frontend" },
-  { name: "Node.js", level: 75, category: "backend" },
-  { name: "Express", level: 70, category: "backend" },
-  { name: "MongoDB", level: 65, category: "backend" },
-  { name: "Git", level: 85, category: "other" },
-  { name: "GitHub", level: 85, category: "other" },
-  { name: "Figma", level: 60, category: "other" }
+  { name: "Next.js", level: 75, category: "frontend" },
+  { name: "Node.js", level: 85, category: "backend" },
+  { name: "Express.js", level: 80, category: "backend" },
+  { name: "Flask", level: 70, category: "backend" },
+  { name: "PostgreSQL", level: 80, category: "other" },
+  { name: "Supabase", level: 85, category: "other" },
+  { name: "LangChain / Whisper STT", level: 75, category: "other" },
+  { name: "Docker & CI/CD", level: 70, category: "other" },
+  { name: "Figma & UX Design", level: 65, category: "other" },
 ];
 
 export const experiences: Experience[] = [
   {
-    id: 1,
-    role: "Frontend Developer",
-    company: "Tech Solutions Inc.",
-    duration: "Jan 2023 - Present",
+    id: "team-everest",
+    company: "Team Everest",
+    role: "Junior Developer",
+    duration: "June 2024 - Present",
     description: [
-      "Developed and maintained responsive web applications using React and TypeScript",
-      "Collaborated with designers to implement pixel-perfect UI components",
-      "Improved application performance by 30% through code optimization"
+      "Architected Real-Time Voice AI System for scalable enterprise use",
+      "Implemented Enterprise SSO Solution with secure multi-app access",
+      "Optimized Business Process Automation reducing manual work by 70%",
+      "Developed Advanced OCR Pipeline with high accuracy document processing",
     ],
-    technologies: ["React", "TypeScript", "Redux", "Tailwind CSS"]
+    technologies: ["React", "Node.js", "Supabase", "LangChain", "Whisper STT", "Docker"],
   },
   {
-    id: 2,
-    role: "Web Developer Intern",
-    company: "Digital Creatives",
-    duration: "Jun 2022 - Dec 2022",
+    id: "whytap",
+    company: "WhyTap",
+    role: "Software Development Intern",
+    duration: "January 2024 - June 2024",
     description: [
-      "Assisted in developing frontend features for client websites",
-      "Created reusable UI components using React",
-      "Participated in code reviews and team meetings"
+      "Delivered Full-Stack Solutions from concept to deployment",
+      "Enhanced API Performance for improved response times",
+      "Collaborated on Agile Development with cross-functional teams",
     ],
-    technologies: ["HTML", "CSS", "JavaScript", "React"]
-  }
+    technologies: ["React", "Node.js", "Express", "PostgreSQL"],
+  },
 ];
 
 export const education: Education[] = [
