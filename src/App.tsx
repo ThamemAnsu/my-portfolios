@@ -1,30 +1,64 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, memo, lazy, Suspense } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import About from './components/About';
-import Skills from './components/Skills';
-import Projects from './components/Projects';
-import Experience from './components/Experience';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
 
-const App: React.FC = () => {
-  // Scroll to top on page load
+// Lazy load components for better performance
+const Hero = lazy(() => import('./components/Hero'));
+const About = lazy(() => import('./components/About'));
+const Skills = lazy(() => import('./components/Skills'));
+const Projects = lazy(() => import('./components/Projects'));
+const Experience = lazy(() => import('./components/Experience'));
+const Contact = lazy(() => import('./components/Contact'));
+const Footer = lazy(() => import('./components/Footer'));
+const AdminPanel = lazy(() => import('./components/adminpanel'));
+
+// Loading component
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center min-h-screen bg-[#0F172A]">
+    <div className="spinner"></div>
+  </div>
+);
+
+// Memoized main content to prevent unnecessary re-renders
+const MainContent = memo(() => {
   useEffect(() => {
+    // Scroll to top on mount (no smooth behavior for instant response)
     window.scrollTo(0, 0);
   }, []);
   
   return (
     <div className="App">
       <Navbar />
-      <Hero />
-      <About />
-      <Skills />
-      <Projects />
-      <Experience />
-      <Contact />
-      <Footer />
+      <Suspense fallback={<LoadingSpinner />}>
+        <Hero />
+        <About />
+        <Skills />
+        <Projects />
+        <Experience />
+        <Contact />
+        <Footer />
+      </Suspense>
     </div>
+  );
+});
+
+MainContent.displayName = 'MainContent';
+
+const App: React.FC = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainContent />} />
+        <Route 
+          path="/admin/*" 
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <AdminPanel />
+            </Suspense>
+          } 
+        />
+      </Routes>
+    </BrowserRouter>
   );
 };
 
