@@ -1,6 +1,7 @@
 import React, { useEffect, memo, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import SidebarNav from './components/Navbar';
+import MobileNav from './components/MobileNav';
 
 // Lazy load components for better performance
 const Hero = lazy(() => import('./components/Hero'));
@@ -22,13 +23,14 @@ const LoadingSpinner = () => (
 // Memoized main content to prevent unnecessary re-renders
 const MainContent = memo(() => {
   useEffect(() => {
-    // Scroll to top on mount (no smooth behavior for instant response)
+    // Scroll to top on mount
     window.scrollTo(0, 0);
   }, []);
   
   return (
     <div className="App">
-      <Navbar />
+      <SidebarNav />
+       <MobileNav />
       <Suspense fallback={<LoadingSpinner />}>
         <Hero />
         <About />

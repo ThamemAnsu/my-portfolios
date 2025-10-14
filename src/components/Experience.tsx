@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaBriefcase, FaCalendarAlt, FaMapMarkerAlt, FaExternalLinkAlt, FaCheckCircle } from 'react-icons/fa';
 import { useExperiences } from '../hooks/useSupabase';
 
 const Experience: React.FC = () => {
@@ -25,10 +26,14 @@ const Experience: React.FC = () => {
 
   if (loading) {
     return (
-      <section id="experience" className="py-24 relative w-full bg-[#111827]">
+      <section id="experience" className="py-32 relative w-full bg-gradient-to-b from-[#0F172A] via-[#1E293B] to-[#0F172A]">
         <div className="container mx-auto px-6 max-w-7xl">
           <div className="flex items-center justify-center">
-            <div className="spinner"></div>
+            <motion.div 
+              className="w-16 h-16 border-4 border-[#2DD4BF] border-t-transparent rounded-full"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            />
           </div>
         </div>
       </section>
@@ -37,10 +42,11 @@ const Experience: React.FC = () => {
 
   if (error) {
     return (
-      <section id="experience" className="py-24 relative w-full bg-[#111827]">
+      <section id="experience" className="py-32 relative w-full bg-gradient-to-b from-[#0F172A] via-[#1E293B] to-[#0F172A]">
         <div className="container mx-auto px-6 max-w-7xl">
-          <div className="notification notification-error">
-            <span>Error loading experiences: {error}</span>
+          <div className="bg-gradient-to-br from-red-500/10 to-red-600/5 border border-red-500/30 rounded-2xl p-8 text-center backdrop-blur-xl">
+            <h3 className="text-red-400 font-bold text-xl mb-2">Error Loading Experiences</h3>
+            <p className="text-red-300 text-sm">{error}</p>
           </div>
         </div>
       </section>
@@ -49,135 +55,322 @@ const Experience: React.FC = () => {
 
   if (experiences.length === 0) {
     return (
-      <section id="experience" className="py-24 relative w-full bg-[#111827]">
+      <section id="experience" className="py-32 relative w-full bg-gradient-to-b from-[#0F172A] via-[#1E293B] to-[#0F172A]">
         <div className="container mx-auto px-6 max-w-7xl">
-          <div className="text-center text-[#9CA3AF] text-xl">No experiences available</div>
+          <div className="text-center">
+            <FaBriefcase className="text-[#2DD4BF] text-6xl mx-auto mb-4 opacity-30" />
+            <p className="text-[#94A3B8] text-xl">No experiences available</p>
+          </div>
         </div>
       </section>
     );
   }
   
   return (
-    <section id="experience" className="py-24 relative w-full bg-[#111827]">
-      <div className="absolute top-20 left-10 w-80 h-80 bg-[#2DD4BF]/5 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#2DD4BF]/5 rounded-full blur-3xl"></div>
+    <section id="experience" className="py-32 relative w-full bg-gradient-to-b from-[#0F172A] via-[#1E293B] to-[#0F172A] overflow-hidden">
+      {/* Animated background gradients */}
+      <motion.div 
+        className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-3xl opacity-20"
+        style={{
+          background: 'radial-gradient(circle, rgba(45,212,191,0.3) 0%, transparent 70%)',
+        }}
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.2, 0.3, 0.2],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+      
+      <motion.div 
+        className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-3xl opacity-20"
+        style={{
+          background: 'radial-gradient(circle, rgba(139,92,246,0.3) 0%, transparent 70%)',
+        }}
+        animate={{
+          scale: [1.2, 1, 1.2],
+          opacity: [0.2, 0.3, 0.2],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 1
+        }}
+      />
+
+      {/* Grid pattern */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSg0NSwyMTIsMTkxLDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
+
+      {/* Floating particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              width: Math.random() * 4 + 2,
+              height: Math.random() * 4 + 2,
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              background: i % 2 === 0 ? '#2DD4BF' : '#8B5CF6',
+            }}
+            animate={{
+              y: [0, Math.random() * 100 - 50],
+              x: [0, Math.random() * 100 - 50],
+              scale: [1, Math.random() * 2 + 0.5, 1],
+              opacity: [0.1, 0.5, 0.1],
+            }}
+            transition={{
+              duration: Math.random() * 15 + 10,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
       
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
-        <div className="mb-16 flex flex-col items-center">
-          <span className="text-[#2DD4BF] font-mono text-sm tracking-wider mb-3 uppercase font-semibold">Where I've Worked</span>
-          <h2 className="text-4xl md:text-5xl font-bold relative mb-4 text-white">
-            Experience
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0.5, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-20 text-center"
+        >
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0.5 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#2DD4BF]/10 to-[#8B5CF6]/10 rounded-full mb-6 border border-[#2DD4BF]/30"
+          >
+            <FaBriefcase className="text-[#2DD4BF] text-lg" />
+            <span className="text-[#2DD4BF] font-mono text-sm tracking-wider font-semibold uppercase">
+              Where I've Worked
+            </span>
+          </motion.div>
+
+          <h2 className="text-5xl md:text-6xl font-black text-white mb-6">
+            Work <span className="bg-gradient-to-r from-[#2DD4BF] to-[#14b8a6] bg-clip-text text-transparent">Experience</span>
           </h2>
-          <div className="w-20 h-1 bg-[#2DD4BF] rounded-full"></div>
-        </div>
+          
+          <motion.div 
+            className="h-1.5 w-32 bg-gradient-to-r from-[#2DD4BF] via-[#8B5CF6] to-[#F59E0B] rounded-full mx-auto"
+            initial={{ width: 0, opacity: 0.5 }}
+            animate={{ width: 128, opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+          />
+        </motion.div>
         
-        <div className="flex flex-col md:flex-row gap-8">
-          {/* Company tabs */}
-          <div className="flex md:flex-col overflow-x-auto md:overflow-visible border-b md:border-b-0 md:border-l-2 border-[#374151] mb-6 md:mb-0 md:w-64 bg-[#1F2937] md:bg-transparent rounded-lg md:rounded-none p-2 md:p-0">
-            {experiences.map((exp) => (
-              <button
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Company tabs - Vertical sidebar */}
+          <motion.div 
+            className="flex lg:flex-col overflow-x-auto lg:overflow-visible gap-2 lg:w-72 pb-2 lg:pb-0"
+            initial={{ opacity: 0.5, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            {experiences.map((exp, index) => (
+              <motion.button
                 key={exp.id}
                 onClick={() => setActiveTab(exp.id)}
-                className={`px-5 py-4 text-left whitespace-nowrap md:whitespace-normal transition-all duration-200 focus:outline-none relative rounded-lg md:rounded-none font-semibold ${
+                className={`relative px-6 py-4 text-left whitespace-nowrap lg:whitespace-normal transition-all duration-300 rounded-2xl font-bold overflow-hidden group ${
                   activeTab === exp.id
-                    ? 'text-[#2DD4BF] bg-[#2DD4BF]/10 md:bg-transparent'
-                    : 'text-[#D1D5DB] hover:text-[#2DD4BF] hover:bg-[#374151]/30'
+                    ? 'bg-gradient-to-r from-[#1F2937] to-[#0F172A] text-[#2DD4BF] border-2 border-[#2DD4BF] shadow-xl shadow-[#2DD4BF]/20'
+                    : 'bg-gradient-to-r from-[#1F2937] to-[#0F172A] text-[#94A3B8] border-2 border-[#374151] hover:border-[#2DD4BF]/50 hover:text-white'
                 }`}
+                whileHover={{ scale: 1.02, x: 5 }}
+                whileTap={{ scale: 0.98 }}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05 }}
               >
+                {/* Active indicator line */}
                 {activeTab === exp.id && (
                   <motion.div 
-                    className="absolute left-0 top-0 bottom-0 w-1 bg-[#2DD4BF] md:block hidden rounded-r"
+                    className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#2DD4BF] to-[#14b8a6] rounded-r-full"
                     layoutId="activeIndicator"
                   />
                 )}
-                {exp.company}
-              </button>
+
+                {/* Hover gradient overlay */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-[#2DD4BF]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+                />
+                
+                <span className="relative z-10">{exp.company}</span>
+
+                {/* Current badge */}
+                {exp.current && (
+                  <motion.span
+                    className="ml-2 px-2 py-1 text-xs bg-gradient-to-r from-[#10B981] to-[#059669] text-white rounded-lg font-bold relative z-10"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", delay: 0.2 }}
+                  >
+                    Current
+                  </motion.span>
+                )}
+              </motion.button>
             ))}
-          </div>
+          </motion.div>
           
           {/* Experience content */}
           <div className="flex-1">
-            {experiences
-              .filter((exp) => exp.id === activeTab)
-              .map((exp) => (
-                <motion.div
-                  key={exp.id}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="card shadow-xl"
-                >
-                  <div className="card-header bg-[#1F2937]">
-                    <div>
-                      <h3 className="text-2xl font-bold text-white mb-1">
-                        {exp.role}
-                      </h3>
-                      <span className="text-[#2DD4BF] text-lg font-semibold">@ {exp.company}</span>
+            <AnimatePresence mode="wait">
+              {experiences
+                .filter((exp) => exp.id === activeTab)
+                .map((exp) => (
+                  <motion.div
+                    key={exp.id}
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -30 }}
+                    transition={{ duration: 0.4 }}
+                    className="relative bg-gradient-to-br from-[#1F2937] to-[#0F172A] rounded-3xl border-2 border-[#374151] overflow-hidden shadow-2xl"
+                  >
+                    {/* Glow effect */}
+                    <motion.div
+                      className="absolute inset-0 rounded-3xl opacity-0"
+                      animate={{ opacity: [0, 0.5, 0] }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                      style={{
+                        boxShadow: '0 0 60px rgba(45,212,191,0.3)',
+                      }}
+                    />
+
+                    {/* Header */}
+                    <div className="relative p-8 border-b-2 border-[#374151] bg-gradient-to-r from-[#1F2937] to-[#0F172A]">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="text-3xl font-black text-white mb-2">
+                            {exp.role}
+                          </h3>
+                          <div className="flex items-center gap-2 mb-4">
+                            <span className="text-[#2DD4BF] text-xl font-bold">@ {exp.company}</span>
+                            {exp.current && (
+                              <motion.div
+                                className="px-3 py-1 bg-gradient-to-r from-[#10B981] to-[#059669] rounded-full flex items-center gap-1"
+                                animate={{ scale: [1, 1.05, 1] }}
+                                transition={{ duration: 2, repeat: Infinity }}
+                              >
+                                <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                                <span className="text-white text-xs font-bold">Current</span>
+                              </motion.div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Decorative icon */}
+                        <motion.div
+                          className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#2DD4BF] to-[#14b8a6] flex items-center justify-center shadow-xl"
+                          animate={{ rotate: [0, 5, -5, 0] }}
+                          transition={{ duration: 4, repeat: Infinity }}
+                        >
+                          <FaBriefcase className="text-white text-2xl" />
+                        </motion.div>
+                      </div>
+
+                      {/* Date and Location */}
+                      <div className="flex flex-wrap gap-6 text-[#94A3B8] text-sm">
+                        <div className="flex items-center gap-2 px-4 py-2 bg-[#0F172A] rounded-xl border border-[#374151]">
+                          <FaCalendarAlt className="text-[#2DD4BF]" />
+                          <span className="font-semibold">{getDateRange(exp.start_date, exp.end_date, exp.current)}</span>
+                        </div>
+                        {exp.location && (
+                          <div className="flex items-center gap-2 px-4 py-2 bg-[#0F172A] rounded-xl border border-[#374151]">
+                            <FaMapMarkerAlt className="text-[#8B5CF6]" />
+                            <span className="font-semibold">{exp.location}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="card-body">
-                    <div className="flex flex-wrap gap-4 text-[#9CA3AF] text-sm mb-6 bg-[#111827] p-4 rounded-lg border border-[#374151]">
-                      <span className="flex items-center font-medium">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-[#2DD4BF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        {getDateRange(exp.start_date, exp.end_date, exp.current)}
-                      </span>
-                      {exp.location && (
-                        <span className="flex items-center font-medium">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-[#2DD4BF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          {exp.location}
-                        </span>
+                    
+                    {/* Content */}
+                    <div className="relative p-8">
+                      {/* Responsibilities */}
+                      <ul className="space-y-4 mb-8">
+                        {exp.description.map((item, index) => (
+                          <motion.li 
+                            key={index} 
+                            className="flex text-[#E5E7EB] leading-relaxed"
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                          >
+                            <FaCheckCircle className="text-[#2DD4BF] mr-3 mt-1 flex-shrink-0" />
+                            <span>{item}</span>
+                          </motion.li>
+                        ))}
+                      </ul>
+                      
+                      {/* Technologies */}
+                      {exp.technologies && exp.technologies.length > 0 && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.3 }}
+                        >
+                          <div className="flex items-center gap-2 mb-4">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#F59E0B] to-[#EF4444] flex items-center justify-center">
+                              <span className="text-white text-sm font-bold">⚡</span>
+                            </div>
+                            <h4 className="text-sm font-bold text-white uppercase tracking-wider">
+                              Technologies Used
+                            </h4>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {exp.technologies.map((tech, index) => (
+                              <motion.span 
+                                key={tech} 
+                                className="text-xs px-4 py-2 rounded-xl bg-gradient-to-br from-[#374151] to-[#1F2937] text-[#2DD4BF] font-mono font-bold border border-[#4B5563] hover:border-[#2DD4BF]/50 hover:scale-105 transition-all duration-200"
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: index * 0.05 }}
+                                whileHover={{ y: -2 }}
+                              >
+                                {tech}
+                              </motion.span>
+                            ))}
+                          </div>
+                        </motion.div>
                       )}
                     </div>
                     
-                    <ul className="space-y-4 mb-6">
-                      {exp.description.map((item, index) => (
-                        <li key={index} className="flex text-[#D1D5DB] leading-relaxed">
-                          <span className="text-[#2DD4BF] mr-3 mt-1 text-lg flex-shrink-0">▸</span>
-                          <span className="text-[#F9FAFB]">{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    
-                    {exp.technologies && exp.technologies.length > 0 && (
-                      <div>
-                        <h4 className="text-sm font-semibold text-[#9CA3AF] mb-3 uppercase tracking-wider">Technologies</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {exp.technologies.map((tech) => (
-                            <span 
-                              key={tech} 
-                              className="text-xs px-3 py-2 rounded-lg bg-[#374151] text-[#2DD4BF] font-mono font-semibold border border-[#4B5563] hover:bg-[#2DD4BF]/20 transition-colors duration-200"
-                            >
-                              {tech}
-                            </span>
-                          ))}
-                        </div>
+                    {/* Footer - Company Link */}
+                    {exp.company_url && (
+                      <div className="relative p-6 border-t-2 border-[#374151] bg-gradient-to-r from-[#1F2937] to-[#0F172A]">
+                        <motion.a 
+                          href={exp.company_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#2DD4BF] to-[#14b8a6] text-[#0F172A] font-bold rounded-xl shadow-lg hover:shadow-xl hover:shadow-[#2DD4BF]/30 transition-all"
+                          whileHover={{ scale: 1.05, x: 5 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <span>Visit Company Website</span>
+                          <FaExternalLinkAlt />
+                        </motion.a>
                       </div>
                     )}
-                  </div>
-                  
-                  {exp.company_url && (
-                    <div className="card-footer">
-                      <a 
-                        href={exp.company_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center text-[#2DD4BF] hover:text-[#14b8a6] transition-colors duration-200 font-semibold group"
-                      >
-                        <span>Visit Company Website</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
-                      </a>
+
+                    {/* Corner decoration */}
+                    <div className="absolute top-0 right-0 w-32 h-32 opacity-10 overflow-hidden">
+                      <motion.div
+                        className="w-full h-full bg-gradient-to-br from-[#2DD4BF] to-transparent"
+                        animate={{ 
+                          scale: [1, 1.2, 1],
+                          opacity: [0.1, 0.2, 0.1]
+                        }}
+                        transition={{ duration: 4, repeat: Infinity }}
+                      />
                     </div>
-                  )}
-                </motion.div>
-              ))}
+                  </motion.div>
+                ))}
+            </AnimatePresence>
           </div>
         </div>
       </div>

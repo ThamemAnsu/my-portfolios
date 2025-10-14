@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { FaGithub, FaLinkedin, FaTwitter, FaArrowDown } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaTwitter, FaArrowDown, FaCode, FaRocket, FaStar } from 'react-icons/fa';
 import { IconWrapper } from '../utils/IconUtils';
 import { useProfile } from '../hooks/useSupabase';
 
@@ -17,8 +17,18 @@ const Hero: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [loopNum, setLoopNum] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   
   const typingRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  
+  // Mouse move effect
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
   
   // Scroll to section function
   const scrollToSection = (sectionId: string) => {
@@ -77,29 +87,82 @@ const Hero: React.FC = () => {
   }
   
   return (
-    <section id="home" className="min-h-screen flex items-center relative overflow-hidden bg-[#0F172A]">
-      {/* Background gradients */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#2DD4BF]/5 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#2DD4BF]/5 rounded-full blur-3xl"></div>
+    <section id="home" className="min-h-screen flex items-center relative overflow-hidden bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A] pt-24 md:pt-20">
+      {/* Animated gradient orbs */}
+      <motion.div 
+        className="absolute top-0 right-0 w-[800px] h-[800px] rounded-full blur-3xl opacity-20"
+        style={{
+          background: 'radial-gradient(circle, rgba(45,212,191,0.4) 0%, rgba(45,212,191,0) 70%)',
+        }}
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.2, 0.3, 0.2],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
       
-      {/* Animated particles */}
+      <motion.div 
+        className="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full blur-3xl opacity-20"
+        style={{
+          background: 'radial-gradient(circle, rgba(139,92,246,0.4) 0%, rgba(139,92,246,0) 70%)',
+        }}
+        animate={{
+          scale: [1.2, 1, 1.2],
+          opacity: [0.2, 0.3, 0.2],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 1
+        }}
+      />
+
+      {/* Interactive gradient following mouse */}
+      <motion.div
+        className="absolute w-96 h-96 rounded-full blur-3xl opacity-10 pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(45,212,191,0.6) 0%, transparent 70%)',
+        }}
+        animate={{
+          x: mousePosition.x - 192,
+          y: mousePosition.y - 192,
+        }}
+        transition={{
+          type: "spring",
+          damping: 30,
+          stiffness: 50,
+        }}
+      />
+      
+      {/* Grid pattern overlay */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSg0NSwyMTIsMTkxLDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40"></div>
+      
+      {/* Floating particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(15)].map((_, i) => (
+        {[...Array(20)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 rounded-full bg-[#2DD4BF]/20"
+            className="absolute rounded-full"
             style={{
+              width: Math.random() * 4 + 2,
+              height: Math.random() * 4 + 2,
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
+              background: i % 2 === 0 ? '#2DD4BF' : '#8B5CF6',
             }}
             animate={{
-              y: [0, Math.random() * 100 - 50],
-              x: [0, Math.random() * 100 - 50],
+              y: [0, Math.random() * 200 - 100],
+              x: [0, Math.random() * 200 - 100],
               scale: [1, Math.random() * 2 + 0.5, 1],
-              opacity: [0.2, 0.5, 0.2],
+              opacity: [0.1, 0.6, 0.1],
             }}
             transition={{
-              duration: Math.random() * 10 + 15,
+              duration: Math.random() * 15 + 10,
               repeat: Infinity,
               ease: "easeInOut",
             }}
@@ -108,153 +171,266 @@ const Hero: React.FC = () => {
       </div>
       
       <div className="container mx-auto px-6 relative z-10 max-w-7xl">
-        <div className="max-w-4xl">
-          {/* Intro Badge */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-block mb-8"
-          >
-            <span className="px-5 py-2.5 bg-[#2DD4BF]/10 text-[#2DD4BF] rounded-full text-sm font-mono tracking-wider border border-[#2DD4BF]/30 font-semibold">
-              {profile?.intro_text || 'Hi, my name is'}
-            </span>
-          </motion.div>
-          
-          {/* Name */}
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-2 leading-tight"
-          >
-            {profile?.name || 'Thamem Ansari'}
-          </motion.h1>
-          
-          {/* Underline */}
-          <motion.div 
-            className="h-1.5 bg-[#2DD4BF] rounded-full mb-8"
-            initial={{ width: 0 }}
-            animate={{ width: '140px' }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-          />
-          
-          {/* Typing Animation */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="mb-8"
-          >
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#9CA3AF]">I'm a</span>
-              <span className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#2DD4BF] relative inline-flex items-baseline">
-                {text}
-                <span className="ml-1 w-0.5 h-8 md:h-10 bg-[#2DD4BF] animate-pulse"></span>
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left Content */}
+          <div className="max-w-3xl">
+            {/* Status Badge */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2 mb-6"
+            >
+              <motion.div
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="w-3 h-3 rounded-full bg-[#2DD4BF] shadow-lg shadow-[#2DD4BF]/50"
+              />
+              <span className="text-[#2DD4BF] font-mono text-sm tracking-wider font-semibold">
+                Available for work
               </span>
-            </div>
-          </motion.div>
-          
-          {/* Bio */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="mb-10 max-w-3xl"
-          >
-            <p className="text-lg md:text-xl text-[#D1D5DB] leading-relaxed">
-              {profile?.bio || 'I build modern, responsive web applications with a focus on user experience and performance.'}
-            </p>
-          </motion.div>
-          
-          {/* CTA Buttons */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex flex-wrap gap-4 mb-12"
-          >
-            <button 
-              onClick={() => scrollToSection('projects')}
-              className="btn btn-primary px-8 py-4 text-[#111827] font-bold rounded-xl hover:shadow-xl hover:shadow-[#2DD4BF]/30 transition-all hover:-translate-y-1 inline-flex items-center"
+            </motion.div>
+
+            {/* Main Heading */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <span>View My Work</span>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-white mb-4 leading-[1.1]">
+                <span className="block">{profile?.intro_text || "Hello, I'm"}</span>
+                <span className="block bg-gradient-to-r from-[#2DD4BF] via-[#14b8a6] to-[#8B5CF6] bg-clip-text text-transparent">
+                  {profile?.name?.split(' ')[0] || 'Thamem'}
+                </span>
+                <span className="block text-white/90">
+                  {profile?.name?.split(' ').slice(1).join(' ') || 'Ansari'}
+                </span>
+              </h1>
+            </motion.div>
             
-            <button 
-              onClick={() => scrollToSection('contact')}
-              className="btn btn-secondary px-8 py-4 text-white font-bold rounded-xl hover:shadow-xl transition-all hover:-translate-y-1 border border-[#374151] hover:border-[#2DD4BF]/50"
+            {/* Typing Animation */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="mb-8"
             >
-              Contact Me
-            </button>
-          </motion.div>
-          
-          {/* Social Links */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="flex space-x-4"
+              <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-[#1F2937] to-[#374151] rounded-2xl border border-[#374151] shadow-xl">
+                  <FaCode className="text-[#2DD4BF] text-xl flex-shrink-0" />
+                  <span className="text-xl md:text-2xl font-bold text-white">
+                    {text}
+                    <span className="ml-1 inline-block w-0.5 h-6 md:h-7 bg-[#2DD4BF] animate-pulse"></span>
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+            
+            {/* Bio */}
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-lg md:text-xl text-[#94A3B8] leading-relaxed mb-10"
+            >
+              {profile?.bio || 'I craft exceptional digital experiences that combine beautiful design with powerful functionality. Let\'s build something amazing together.'}
+            </motion.p>
+            
+            {/* Stats */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="grid grid-cols-3 gap-4 mb-10"
+            >
+              <div className="bg-gradient-to-br from-[#1F2937] to-[#0F172A] p-4 rounded-xl border border-[#374151] hover:border-[#2DD4BF]/50 transition-all">
+                <div className="text-3xl font-bold text-[#2DD4BF] mb-1">50+</div>
+                <div className="text-sm text-[#94A3B8]">Projects</div>
+              </div>
+              <div className="bg-gradient-to-br from-[#1F2937] to-[#0F172A] p-4 rounded-xl border border-[#374151] hover:border-[#8B5CF6]/50 transition-all">
+                <div className="text-3xl font-bold text-[#8B5CF6] mb-1">3+</div>
+                <div className="text-sm text-[#94A3B8]">Years</div>
+              </div>
+              <div className="bg-gradient-to-br from-[#1F2937] to-[#0F172A] p-4 rounded-xl border border-[#374151] hover:border-[#F59E0B]/50 transition-all">
+                <div className="text-3xl font-bold text-[#F59E0B] mb-1">100%</div>
+                <div className="text-sm text-[#94A3B8]">Quality</div>
+              </div>
+            </motion.div>
+            
+            {/* CTA Buttons */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="flex flex-wrap gap-4 mb-10"
+            >
+              <motion.button 
+                onClick={() => scrollToSection('projects')}
+                className="group relative px-8 py-4 bg-gradient-to-r from-[#2DD4BF] to-[#14b8a6] text-[#0F172A] font-bold rounded-xl overflow-hidden shadow-xl shadow-[#2DD4BF]/30"
+                whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(45,212,191,0.4)' }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent"
+                  initial={{ x: '-100%' }}
+                  whileHover={{ x: '100%' }}
+                  transition={{ duration: 0.6 }}
+                />
+                <span className="relative flex items-center gap-2">
+                  <FaRocket />
+                  View My Work
+                </span>
+              </motion.button>
+              
+              <motion.button 
+                onClick={() => scrollToSection('contact')}
+                className="group px-8 py-4 bg-[#1F2937] text-white font-bold rounded-xl border-2 border-[#374151] hover:border-[#2DD4BF] transition-all shadow-xl relative overflow-hidden"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-[#2DD4BF]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+                />
+                <span className="relative">Let's Talk</span>
+              </motion.button>
+            </motion.div>
+            
+            {/* Social Links */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="flex items-center gap-4"
+            >
+              <div className="flex gap-3">
+                {profile?.github_url && (
+                  <motion.a 
+                    href={profile.github_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1F2937] to-[#0F172A] flex items-center justify-center text-[#94A3B8] hover:text-white border border-[#374151] hover:border-[#2DD4BF] transition-all shadow-lg hover:shadow-[#2DD4BF]/30"
+                    whileHover={{ y: -5, scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    {IconWrapper(FaGithub, { size: 20 })}
+                  </motion.a>
+                )}
+                {profile?.linkedin_url && (
+                  <motion.a 
+                    href={profile.linkedin_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1F2937] to-[#0F172A] flex items-center justify-center text-[#94A3B8] hover:text-white border border-[#374151] hover:border-[#0EA5E9] transition-all shadow-lg hover:shadow-[#0EA5E9]/30"
+                    whileHover={{ y: -5, scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    {IconWrapper(FaLinkedin, { size: 20 })}
+                  </motion.a>
+                )}
+                {profile?.twitter_url && (
+                  <motion.a 
+                    href={profile.twitter_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1F2937] to-[#0F172A] flex items-center justify-center text-[#94A3B8] hover:text-white border border-[#374151] hover:border-[#1DA1F2] transition-all shadow-lg hover:shadow-[#1DA1F2]/30"
+                    whileHover={{ y: -5, scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    {IconWrapper(FaTwitter, { size: 20 })}
+                  </motion.a>
+                )}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Right Side - Visual Element */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="hidden lg:flex items-center justify-center relative"
           >
-            {profile?.github_url && (
-              <motion.a 
-                href={profile.github_url} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="w-12 h-12 rounded-xl bg-[#1F2937] flex items-center justify-center text-[#D1D5DB] hover:text-white hover:bg-[#2DD4BF] transition-all duration-200 border border-[#374151] hover:border-[#2DD4BF] shadow-lg"
-                whileHover={{ y: -5, scale: 1.05 }}
-                transition={{ duration: 0.2 }}
-              >
-                {IconWrapper(FaGithub, { size: 20 })}
-              </motion.a>
-            )}
-            {profile?.linkedin_url && (
-              <motion.a 
-                href={profile.linkedin_url} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="w-12 h-12 rounded-xl bg-[#1F2937] flex items-center justify-center text-[#D1D5DB] hover:text-white hover:bg-[#2DD4BF] transition-all duration-200 border border-[#374151] hover:border-[#2DD4BF] shadow-lg"
-                whileHover={{ y: -5, scale: 1.05 }}
-                transition={{ duration: 0.2 }}
-              >
-                {IconWrapper(FaLinkedin, { size: 20 })}
-              </motion.a>
-            )}
-            {profile?.twitter_url && (
-              <motion.a 
-                href={profile.twitter_url} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="w-12 h-12 rounded-xl bg-[#1F2937] flex items-center justify-center text-[#D1D5DB] hover:text-white hover:bg-[#2DD4BF] transition-all duration-200 border border-[#374151] hover:border-[#2DD4BF] shadow-lg"
-                whileHover={{ y: -5, scale: 1.05 }}
-                transition={{ duration: 0.2 }}
-              >
-                {IconWrapper(FaTwitter, { size: 20 })}
-              </motion.a>
-            )}
+            {/* Floating Card */}
+            <motion.div 
+              className="relative w-full max-w-md"
+              animate={{ y: [0, -20, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            >
+              {/* Main Card */}
+              <div className="relative bg-gradient-to-br from-[#1F2937] via-[#374151] to-[#1F2937] p-8 rounded-3xl border border-[#374151] shadow-2xl backdrop-blur-xl overflow-hidden">
+                {/* Animated gradient overlay */}
+                <motion.div
+                  className="absolute inset-0 opacity-50"
+                  style={{
+                    background: 'radial-gradient(circle at 50% 50%, rgba(45,212,191,0.1) 0%, transparent 50%)',
+                  }}
+                  animate={{
+                    scale: [1, 1.5, 1],
+                    opacity: [0.3, 0.5, 0.3],
+                  }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                />
+
+                {/* Code Preview */}
+                <div className="relative z-10 font-mono text-sm">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-3 h-3 rounded-full bg-[#EF4444]"></div>
+                    <div className="w-3 h-3 rounded-full bg-[#F59E0B]"></div>
+                    <div className="w-3 h-3 rounded-full bg-[#10B981]"></div>
+                  </div>
+                  <pre className="text-[#94A3B8] leading-relaxed">
+                    <code>
+                      <span className="text-[#8B5CF6]">const</span> <span className="text-[#2DD4BF]">developer</span> = {'{\n'}
+                      {'  '}name: <span className="text-[#F59E0B]">"{profile?.name || 'Thamem'}"</span>,{'\n'}
+                      {'  '}skills: <span className="text-[#10B981]">['React', 'TS']</span>,{'\n'}
+                      {'  '}passion: <span className="text-[#F59E0B]">"∞"</span>,{'\n'}
+                      {'  '}coffee: <span className="text-[#F59E0B]">"☕☕☕"</span>{'\n'}
+                      {'}'};
+                    </code>
+                  </pre>
+                </div>
+
+                {/* Floating Icons */}
+                <motion.div
+                  className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-br from-[#2DD4BF] to-[#14b8a6] rounded-2xl flex items-center justify-center shadow-xl"
+                  animate={{ rotate: [0, 10, 0], y: [0, -10, 0] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                >
+                  <FaStar className="text-white text-2xl" />
+                </motion.div>
+
+                <motion.div
+                  className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-[#8B5CF6] to-[#6366F1] rounded-2xl flex items-center justify-center shadow-xl"
+                  animate={{ rotate: [0, -10, 0], y: [0, 10, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
+                >
+                  <FaCode className="text-white text-2xl" />
+                </motion.div>
+              </div>
+
+              {/* Decorative Elements */}
+              <motion.div
+                className="absolute -z-10 inset-0 bg-gradient-to-r from-[#2DD4BF]/20 to-[#8B5CF6]/20 rounded-3xl blur-2xl"
+                animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.8, 0.5] }}
+                transition={{ duration: 4, repeat: Infinity }}
+              />
+            </motion.div>
           </motion.div>
         </div>
       </div>
       
-      {/* Scroll indicator */}
+      {/* Scroll Indicator */}
       <motion.div 
-        className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center cursor-pointer"
+        className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center cursor-pointer group"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5, duration: 0.8 }}
         onClick={() => scrollToSection('about')}
       >
-        <span className="text-[#9CA3AF] font-mono text-sm mb-3 font-medium">Scroll Down</span>
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 1.5 }}
-          className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1F2937] text-[#2DD4BF] border border-[#374151] shadow-lg hover:bg-[#374151] transition-colors"
-        >
-          <FaArrowDown size={16} />
-        </motion.div>
+        <span className="text-[#94A3B8] font-mono text-sm mb-3 font-medium group-hover:text-[#2DD4BF] transition-colors">
+          Scroll to explore
+        </span>
+      
       </motion.div>
     </section>
   );
