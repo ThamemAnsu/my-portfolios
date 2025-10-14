@@ -1,8 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, useAnimation, useInView } from 'framer-motion';
 import { FaEnvelope, FaMapMarkerAlt, FaPhoneAlt, FaPaperPlane, FaLinkedin, FaGithub, FaTwitter } from 'react-icons/fa';
+import { useProfile } from '../hooks/useSupabase';
+import { submitContactForm } from '../hooks/useSupabase';
 
 const Contact: React.FC = () => {
+  const { profile } = useProfile();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,6 +15,7 @@ const Contact: React.FC = () => {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   
   const controls = useAnimation();
   const ref = useRef(null);
@@ -44,47 +48,47 @@ const Contact: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitError(null);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    const result = await submitContactForm(formData);
     
-    // Here you would typically handle form submission
-    console.log('Form data:', formData);
+    if (result.success) {
+      setIsSubmitted(true);
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      
+      setTimeout(() => {
+        setIsSubmitted(false);
+      }, 5000);
+    } else {
+      setSubmitError(result.error || 'An error occurred. Please try again.');
+    }
     
     setIsSubmitting(false);
-    setIsSubmitted(true);
-    
-    // Reset form after 5 seconds
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 5000);
   };
-  
+
   const contactInfo = [
     {
       icon: FaEnvelope,
       title: "Email",
-      content: "thamemansari55@gmail.com",
-      link: "mailto:thamemansari55@gmail.com"
+      content: profile?.email || "thamemansari55@gmail.com",
+      link: `mailto:${profile?.email || "thamemansari55@gmail.com"}`
     },
     {
       icon: FaPhoneAlt,
       title: "Phone",
-      content: "+91 6381360124",
-      link: "tel:+916381360124"
+      content: profile?.phone || "+91 6381360124",
+      link: `tel:${profile?.phone || "+916381360124"}`
     },
     {
       icon: FaMapMarkerAlt,
       title: "Location",
-      content: "Washermenpet, Tamil Nadu, India",
-      link: "https://www.google.com/maps/place/Washermanpet,+Chennai,+Tamil+Nadu+600021/@13.1143019,80.2820587,1808m/data=!3m2!1e3!4b1!4m6!3m5!1s0x3a526f640d02cd81:0x3413a7cda4dfad1!8m2!3d13.1148236!4d80.2871828!16zL20vMGdfcHBq?entry=ttu&g_ep=EgoyMDI1MDgxOS4wIKXMDSoASAFQAw%3D%3D"
+      content: profile?.location || "Washermenpet, Tamil Nadu, India",
+      link: "https://www.google.com/maps/place/Washermanpet,+Chennai,+Tamil+Nadu"
     }
   ];
   
   return (
     <section id="contact" className="py-20 relative w-full">
-      {/* Background elements */}
       <div className="absolute top-20 right-20 w-72 h-72 bg-teal-500/5 rounded-full blur-3xl"></div>
       <div className="absolute bottom-20 left-20 w-80 h-80 bg-teal-500/5 rounded-full blur-3xl"></div>
       
@@ -135,7 +139,6 @@ const Contact: React.FC = () => {
         </div>
         
         <div className="grid md:grid-cols-5 gap-8 items-stretch">
-          {/* Left column with extra info */}
           <motion.div 
             variants={fadeInUp}
             custom={5}
@@ -151,30 +154,36 @@ const Contact: React.FC = () => {
             
             <h4 className="text-lg font-semibold text-white mb-3">Connect with me</h4>
             <div className="flex space-x-4 mb-8">
-              <a 
-                href="https://github.com/ThamemAnsu" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="w-10 h-10 rounded-full bg-gray-700/70 flex items-center justify-center text-gray-300 hover:text-white hover:bg-teal-500 transition-all duration-300"
-              >
-                <FaGithub size={18} />
-              </a>
-              <a 
-                href="https://linkedin.com/in/thamemansu" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="w-10 h-10 rounded-full bg-gray-700/70 flex items-center justify-center text-gray-300 hover:text-white hover:bg-teal-500 transition-all duration-300"
-              >
-                <FaLinkedin size={18} />
-              </a>
-              <a 
-                href="https://twitter.com/thamemansu" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="w-10 h-10 rounded-full bg-gray-700/70 flex items-center justify-center text-gray-300 hover:text-white hover:bg-teal-500 transition-all duration-300"
-              >
-                <FaTwitter size={18} />
-              </a>
+              {profile?.github_url && (
+                <a 
+                  href={profile.github_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="w-10 h-10 rounded-full bg-gray-700/70 flex items-center justify-center text-gray-300 hover:text-white hover:bg-teal-500 transition-all duration-300"
+                >
+                  <FaGithub size={18} />
+                </a>
+              )}
+              {profile?.linkedin_url && (
+                <a 
+                  href={profile.linkedin_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="w-10 h-10 rounded-full bg-gray-700/70 flex items-center justify-center text-gray-300 hover:text-white hover:bg-teal-500 transition-all duration-300"
+                >
+                  <FaLinkedin size={18} />
+                </a>
+              )}
+              {profile?.twitter_url && (
+                <a 
+                  href={profile.twitter_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="w-10 h-10 rounded-full bg-gray-700/70 flex items-center justify-center text-gray-300 hover:text-white hover:bg-teal-500 transition-all duration-300"
+                >
+                  <FaTwitter size={18} />
+                </a>
+              )}
             </div>
             
             <div className="mt-auto text-center">
@@ -196,7 +205,6 @@ const Contact: React.FC = () => {
             </div>
           </motion.div>
           
-          {/* Right column with form */}
           <motion.div 
             variants={fadeInUp}
             custom={6}
@@ -220,6 +228,12 @@ const Contact: React.FC = () => {
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
+                {submitError && (
+                  <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-red-400">
+                    {submitError}
+                  </div>
+                )}
+                
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name" className="block text-gray-300 text-sm font-medium mb-2">Your Name</label>

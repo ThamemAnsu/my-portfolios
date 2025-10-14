@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { FaGithub, FaLinkedin, FaTwitter, FaArrowDown } from 'react-icons/fa';
-import { Link } from 'react-scroll';
 import { IconWrapper } from '../utils/IconUtils';
+import { useProfile } from '../hooks/useSupabase';
 
-// Define roles outside the component to avoid recreation on each render
 const ROLES = [
   'Frontend Developer',
   'AI Specialist',
@@ -13,13 +12,28 @@ const ROLES = [
 ];
 
 const Hero: React.FC = () => {
+  const { profile, loading } = useProfile();
   const [text, setText] = useState('');
-  const [isTypingComplete, setIsTypingComplete] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [loopNum, setLoopNum] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
   
   const typingRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  
+  // Scroll to section function
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const navHeight = 70;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - navHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
   
   useEffect(() => {
     const handleTyping = () => {
@@ -30,12 +44,10 @@ const Hero: React.FC = () => {
         setText(fullText.substring(0, text.length + 1));
         
         if (text.length === fullText.length) {
-          setIsTypingComplete(true);
-          setTypingSpeed(2000); // Pause at the end
+          setTypingSpeed(2000);
           setTimeout(() => {
             setIsDeleting(true);
             setTypingSpeed(50);
-            setIsTypingComplete(false);
           }, 2000);
         }
       } else {
@@ -56,39 +68,26 @@ const Hero: React.FC = () => {
     };
   }, [text, isDeleting, loopNum, typingSpeed]);
 
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        when: "beforeChildren",
-        staggerChildren: 0.2
-      }
-    }
-  };
-  
-  const itemVariants = {
-    hidden: { y: 50, opacity: 0 },
-    visible: { 
-      y: 0, 
-      opacity: 1,
-      transition: { type: "spring", stiffness: 100 }
-    }
-  };
+  if (loading) {
+    return (
+      <section id="home" className="min-h-screen flex items-center justify-center bg-[#0F172A]">
+        <div className="spinner"></div>
+      </section>
+    );
+  }
   
   return (
-    <section id="home" className="min-h-screen flex items-center relative overflow-hidden">
-      {/* Background elements */}
-      <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-teal-500/5 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-teal-500/5 rounded-full blur-3xl"></div>
+    <section id="home" className="min-h-screen flex items-center relative overflow-hidden bg-[#0F172A]">
+      {/* Background gradients */}
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#2DD4BF]/5 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#2DD4BF]/5 rounded-full blur-3xl"></div>
       
-      {/* Animated particles (decorative) */}
+      {/* Animated particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[...Array(15)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 rounded-full bg-teal-400/30"
+            className="absolute w-1 h-1 rounded-full bg-[#2DD4BF]/20"
             style={{
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
@@ -97,7 +96,7 @@ const Hero: React.FC = () => {
               y: [0, Math.random() * 100 - 50],
               x: [0, Math.random() * 100 - 50],
               scale: [1, Math.random() * 2 + 0.5, 1],
-              opacity: [0.3, 0.6, 0.3],
+              opacity: [0.2, 0.5, 0.2],
             }}
             transition={{
               duration: Math.random() * 10 + 15,
@@ -108,114 +107,153 @@ const Hero: React.FC = () => {
         ))}
       </div>
       
-      <div className="container mx-auto px-6 relative z-10">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="max-w-3xl"
-        >
-          <motion.p 
-            variants={itemVariants}
-            className="text-teal-400 mb-4 font-mono tracking-wider"
+      <div className="container mx-auto px-6 relative z-10 max-w-7xl">
+        <div className="max-w-4xl">
+          {/* Intro Badge */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-block mb-8"
           >
-            Hi, my name is
-          </motion.p>
+            <span className="px-5 py-2.5 bg-[#2DD4BF]/10 text-[#2DD4BF] rounded-full text-sm font-mono tracking-wider border border-[#2DD4BF]/30 font-semibold">
+              {profile?.intro_text || 'Hi, my name is'}
+            </span>
+          </motion.div>
           
+          {/* Name */}
           <motion.h1 
-            variants={itemVariants}
-            className="text-5xl md:text-7xl font-bold text-white mb-2 relative"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-2 leading-tight"
           >
-            Thamem Ansari
-            <span className="absolute -bottom-2 left-0 w-20 h-1 bg-teal-400"></span>
+            {profile?.name || 'Thamem Ansari'}
           </motion.h1>
           
-          <motion.h2 
-            variants={itemVariants}
-            className="text-3xl md:text-5xl font-bold text-gray-300 mb-6 h-16 flex items-center"
-          >
-            I'm a <span className="text-teal-400 ml-3 relative">
-              {text}
-              <span className={`absolute ml-1 w-0.5 h-7 bg-teal-400 ${isTypingComplete ? 'animate-none opacity-0' : 'animate-blink'}`}></span>
-            </span>
-          </motion.h2>
-          
-          <motion.p 
-            variants={itemVariants}
-            className="text-lg text-gray-300 mb-8 leading-relaxed"
-          >
-            I build modern, responsive web applications with a focus on user experience and performance.
-            Currently specializing in React, TypeScript, and AI integration for creating intelligent
-            and interactive digital experiences.
-          </motion.p>
-          
+          {/* Underline */}
           <motion.div 
-            variants={itemVariants}
-            className="flex flex-wrap gap-4"
+            className="h-1.5 bg-[#2DD4BF] rounded-full mb-8"
+            initial={{ width: 0 }}
+            animate={{ width: '140px' }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+          />
+          
+          {/* Typing Animation */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mb-8"
           >
-            <Link 
-              to="projects" 
-              smooth={true} 
-              duration={500} 
-              className="cursor-pointer"
-            >
-              <button className="px-6 py-3 bg-teal-500 text-white font-medium rounded-lg hover:bg-teal-400 transition-all transform hover:-translate-y-1 hover:shadow-lg hover:shadow-teal-500/20 flex items-center">
-                <span>View My Work</span>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </Link>
-            <Link 
-              to="contact" 
-              smooth={true} 
-              duration={500}
-              className="cursor-pointer"
-            >
-              <button className="px-6 py-3 bg-transparent text-teal-400 font-medium rounded-lg border border-teal-400 hover:bg-teal-400/10 transition-all transform hover:-translate-y-1 hover:shadow-lg">
-                Contact Me
-              </button>
-            </Link>
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#9CA3AF]">I'm a</span>
+              <span className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#2DD4BF] relative inline-flex items-baseline">
+                {text}
+                <span className="ml-1 w-0.5 h-8 md:h-10 bg-[#2DD4BF] animate-pulse"></span>
+              </span>
+            </div>
           </motion.div>
           
+          {/* Bio */}
           <motion.div 
-            variants={itemVariants}
-            className="mt-12 flex space-x-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="mb-10 max-w-3xl"
           >
-            {[
-              { icon: FaGithub, url: "https://github.com/ThamemAnsu" },
-              { icon: FaLinkedin, url: "https://linkedin.com/in/thamemansu" },
-              { icon: FaTwitter, url: "https://twitter.com/thamemansu" }
-            ].map((social, index) => (
+            <p className="text-lg md:text-xl text-[#D1D5DB] leading-relaxed">
+              {profile?.bio || 'I build modern, responsive web applications with a focus on user experience and performance.'}
+            </p>
+          </motion.div>
+          
+          {/* CTA Buttons */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="flex flex-wrap gap-4 mb-12"
+          >
+            <button 
+              onClick={() => scrollToSection('projects')}
+              className="btn btn-primary px-8 py-4 text-[#111827] font-bold rounded-xl hover:shadow-xl hover:shadow-[#2DD4BF]/30 transition-all hover:-translate-y-1 inline-flex items-center"
+            >
+              <span>View My Work</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+            
+            <button 
+              onClick={() => scrollToSection('contact')}
+              className="btn btn-secondary px-8 py-4 text-white font-bold rounded-xl hover:shadow-xl transition-all hover:-translate-y-1 border border-[#374151] hover:border-[#2DD4BF]/50"
+            >
+              Contact Me
+            </button>
+          </motion.div>
+          
+          {/* Social Links */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="flex space-x-4"
+          >
+            {profile?.github_url && (
               <motion.a 
-                key={index}
-                href={social.url} 
+                href={profile.github_url} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="w-12 h-12 rounded-full bg-gray-800/80 flex items-center justify-center text-gray-300 hover:text-white hover:bg-teal-500 transition-all duration-300"
-                whileHover={{ y: -5, scale: 1.1 }}
+                className="w-12 h-12 rounded-xl bg-[#1F2937] flex items-center justify-center text-[#D1D5DB] hover:text-white hover:bg-[#2DD4BF] transition-all duration-200 border border-[#374151] hover:border-[#2DD4BF] shadow-lg"
+                whileHover={{ y: -5, scale: 1.05 }}
+                transition={{ duration: 0.2 }}
               >
-                {IconWrapper(social.icon, { size: 20 })}
+                {IconWrapper(FaGithub, { size: 20 })}
               </motion.a>
-            ))}
+            )}
+            {profile?.linkedin_url && (
+              <motion.a 
+                href={profile.linkedin_url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-12 h-12 rounded-xl bg-[#1F2937] flex items-center justify-center text-[#D1D5DB] hover:text-white hover:bg-[#2DD4BF] transition-all duration-200 border border-[#374151] hover:border-[#2DD4BF] shadow-lg"
+                whileHover={{ y: -5, scale: 1.05 }}
+                transition={{ duration: 0.2 }}
+              >
+                {IconWrapper(FaLinkedin, { size: 20 })}
+              </motion.a>
+            )}
+            {profile?.twitter_url && (
+              <motion.a 
+                href={profile.twitter_url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-12 h-12 rounded-xl bg-[#1F2937] flex items-center justify-center text-[#D1D5DB] hover:text-white hover:bg-[#2DD4BF] transition-all duration-200 border border-[#374151] hover:border-[#2DD4BF] shadow-lg"
+                whileHover={{ y: -5, scale: 1.05 }}
+                transition={{ duration: 0.2 }}
+              >
+                {IconWrapper(FaTwitter, { size: 20 })}
+              </motion.a>
+            )}
           </motion.div>
-        </motion.div>
+        </div>
       </div>
       
       {/* Scroll indicator */}
       <motion.div 
-        className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center"
+        className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center cursor-pointer"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2.5, duration: 1 }}
+        transition={{ delay: 1.5, duration: 0.8 }}
+        onClick={() => scrollToSection('about')}
       >
-        <span className="text-gray-400 font-mono text-sm mb-2">Scroll Down</span>
+        <span className="text-[#9CA3AF] font-mono text-sm mb-3 font-medium">Scroll Down</span>
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 1.5 }}
-          className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-800/50 text-teal-400"
+          className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1F2937] text-[#2DD4BF] border border-[#374151] shadow-lg hover:bg-[#374151] transition-colors"
         >
-          <FaArrowDown size={14} />
+          <FaArrowDown size={16} />
         </motion.div>
       </motion.div>
     </section>
