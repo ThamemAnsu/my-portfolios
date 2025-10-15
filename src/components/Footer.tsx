@@ -11,18 +11,13 @@ const Footer: React.FC = () => {
 
 
   return (
-    <footer className="relative pt-16 pb-8 bg-gradient-to-t from-gray-900 to-gray-900/95 overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -bottom-8 left-1/4 w-64 h-64 rounded-full bg-teal-500/5 blur-3xl"></div>
-        <div className="absolute -top-16 right-1/4 w-48 h-48 rounded-full bg-teal-500/5 blur-3xl"></div>
-      </div>
+    <footer className="relative pt-16 pb-8  overflow-hidden">
+   
       
       <div className="container mx-auto px-6 relative z-10">
         {/* Back to top button */}
         
-        
-       
+      
         
         {/* Divider */}
         <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent mb-8"></div>

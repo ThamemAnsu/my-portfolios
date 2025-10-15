@@ -3,6 +3,36 @@ import { useState, useEffect } from 'react';
 import { supabase, Profile, Skill, Project, Experience, Message } from '../lib/supabase';
 
 // Hook for fetching profile data
+// export const useProfile = () => {
+//   const [profile, setProfile] = useState<Profile | null>(null);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+
+//   useEffect(() => {
+//     const fetchProfile = async () => {
+//       try {
+//         const { data, error } = await supabase
+//           .from('profiles')
+//           .select('*')
+//           .single();
+
+//         if (error) throw error;
+//         setProfile(data);
+//       } catch (err: any) {
+//         setError(err.message);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchProfile();
+//   }, []);
+
+//   return { profile, loading, error };
+// };
+
+
+
 export const useProfile = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -14,11 +44,13 @@ export const useProfile = () => {
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
-          .single();
+          .limit(1)
+          .maybeSingle(); // ✅ Change from .single() to .maybeSingle()
 
         if (error) throw error;
         setProfile(data);
       } catch (err: any) {
+        console.error('Profile fetch error:', err);
         setError(err.message);
       } finally {
         setLoading(false);

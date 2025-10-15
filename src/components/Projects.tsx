@@ -5,6 +5,21 @@ import { useProjects } from '../hooks/useSupabase';
 import { IconWrapper } from '../utils/IconUtils';
 import type { Project } from '../lib/supabase';
 
+// Space-themed placeholder images
+const getSpacePlaceholder = (index: number): string => {
+  const spaceImages = [
+    'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=800&h=600&fit=crop', // Galaxy
+    'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800&h=600&fit=crop', // Milky Way
+    'https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=800&h=600&fit=crop', // Planet
+    'https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=800&h=600&fit=crop', // Nebula
+    'https://images.unsplash.com/photo-1608178398319-48f814d0750c?w=800&h=600&fit=crop', // Space station
+    'https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=800&h=600&fit=crop', // Stars
+    'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=600&fit=crop', // Earth from space
+    'https://images.unsplash.com/photo-1464802686167-b939a6910659?w=800&h=600&fit=crop', // Northern lights space
+  ];
+  return spaceImages[index % spaceImages.length];
+};
+
 const Projects: React.FC = () => {
   const { projects, loading, error } = useProjects();
   const [hoveredProject, setHoveredProject] = useState<string | null>(null);
@@ -50,72 +65,8 @@ const Projects: React.FC = () => {
   }
 
   return (
-    <section id="projects" className="py-32 relative w-full bg-gradient-to-b from-[#0F172A] via-[#1E293B] to-[#0F172A] overflow-hidden">
-      {/* Animated background gradients */}
-      <motion.div 
-        className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full blur-3xl opacity-20"
-        style={{
-          background: 'radial-gradient(circle, rgba(45,212,191,0.3) 0%, transparent 70%)',
-        }}
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.2, 0.3, 0.2],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-      />
-      
-      <motion.div 
-        className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full blur-3xl opacity-20"
-        style={{
-          background: 'radial-gradient(circle, rgba(139,92,246,0.3) 0%, transparent 70%)',
-        }}
-        animate={{
-          scale: [1.2, 1, 1.2],
-          opacity: [0.2, 0.3, 0.2],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 1
-        }}
-      />
-
-      {/* Grid pattern */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSg0NSwyMTIsMTkxLDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
-
-      {/* Floating particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(10)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              width: Math.random() * 4 + 2,
-              height: Math.random() * 4 + 2,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              background: i % 2 === 0 ? '#2DD4BF' : '#8B5CF6',
-            }}
-            animate={{
-              y: [0, Math.random() * 100 - 50],
-              x: [0, Math.random() * 100 - 50],
-              scale: [1, Math.random() * 2 + 0.5, 1],
-              opacity: [0.1, 0.5, 0.1],
-            }}
-            transition={{
-              duration: Math.random() * 15 + 10,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
-      
+    <section id="projects" className="py-32 relative w-full  overflow-hidden">
+           
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
         {/* Header */}
         <motion.div
@@ -207,6 +158,7 @@ const Projects: React.FC = () => {
                 project={project}
                 hoveredProject={hoveredProject}
                 setHoveredProject={setHoveredProject}
+                index={index}
               />
             </motion.div>
           ))}
@@ -265,14 +217,18 @@ interface ProjectCardProps {
   project: Project;
   hoveredProject: string | null;
   setHoveredProject: React.Dispatch<React.SetStateAction<string | null>>;
+  index: number;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ 
   project,
   hoveredProject, 
-  setHoveredProject
+  setHoveredProject,
+  index
 }) => {
   const isHovered = hoveredProject === project.id;
+  // Use project image or space-themed placeholder - use index directly for variety
+  const imageUrl = project.image_url || getSpacePlaceholder(index);
   
   return (
     <motion.div
@@ -291,84 +247,70 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       />
 
       {/* Image Section */}
-      {project.image_url ? (
-        <div className="relative h-56 overflow-hidden bg-[#111827]">
-          <motion.img 
-            src={project.image_url} 
-            alt={project.title}
-            className="w-full h-full object-cover"
-            animate={{ scale: isHovered ? 1.1 : 1 }}
-            transition={{ duration: 0.4 }}
-          />
-          
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/50 to-transparent"></div>
-          
-          {/* Action Buttons Overlay */}
-          <motion.div 
-            className="absolute inset-0 flex items-center justify-center gap-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isHovered ? 1 : 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {project.github_url && (
-              <motion.a 
-                href={project.github_url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#1F2937] to-[#0F172A] flex items-center justify-center text-white hover:text-[#2DD4BF] border-2 border-[#374151] hover:border-[#2DD4BF] shadow-2xl backdrop-blur-xl"
-                whileHover={{ scale: 1.15, rotate: 5 }}
-                whileTap={{ scale: 0.9 }}
-                initial={{ y: 30, opacity: 0 }}
-                animate={{ y: isHovered ? 0 : 30, opacity: isHovered ? 1 : 0 }}
-                transition={{ duration: 0.3, delay: 0.05 }}
-              >
-                {IconWrapper(FaGithub, { size: 22 })}
-              </motion.a>
-            )}
-            {project.live_url && (
-              <motion.a 
-                href={project.live_url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#2DD4BF] to-[#14b8a6] flex items-center justify-center text-white shadow-2xl shadow-[#2DD4BF]/50"
-                whileHover={{ scale: 1.15, rotate: -5 }}
-                whileTap={{ scale: 0.9 }}
-                initial={{ y: 30, opacity: 0 }}
-                animate={{ y: isHovered ? 0 : 30, opacity: isHovered ? 1 : 0 }}
-                transition={{ duration: 0.3, delay: 0.1 }}
-              >
-                {IconWrapper(FaExternalLinkAlt, { size: 20 })}
-              </motion.a>
-            )}
-          </motion.div>
-
-          {/* Featured Badge */}
-          {project.featured && (
-            <motion.div
-              className="absolute top-4 right-4 px-4 py-2 bg-gradient-to-r from-[#F59E0B] to-[#EF4444] rounded-xl flex items-center gap-2 shadow-xl"
-              initial={{ scale: 0, rotate: -45 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ type: "spring", delay: 0.2 }}
+      <div className="relative h-56 overflow-hidden bg-[#111827]">
+        <motion.img 
+          src={imageUrl} 
+          alt={project.title}
+          className="w-full h-full object-cover"
+          animate={{ scale: isHovered ? 1.1 : 1 }}
+          transition={{ duration: 0.4 }}
+        />
+        
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/50 to-transparent"></div>
+        
+        {/* Action Buttons Overlay */}
+        <motion.div 
+          className="absolute inset-0 flex items-center justify-center gap-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {project.github_url && (
+            <motion.a 
+              href={project.github_url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#1F2937] to-[#0F172A] flex items-center justify-center text-white hover:text-[#2DD4BF] border-2 border-[#374151] hover:border-[#2DD4BF] shadow-2xl backdrop-blur-xl"
+              whileHover={{ scale: 1.15, rotate: 5 }}
+              whileTap={{ scale: 0.9 }}
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: isHovered ? 0 : 30, opacity: isHovered ? 1 : 0 }}
+              transition={{ duration: 0.3, delay: 0.05 }}
             >
-              <FaStar className="text-white text-sm" />
-              <span className="text-white text-xs font-bold">Featured</span>
-            </motion.div>
+              {IconWrapper(FaGithub, { size: 22 })}
+            </motion.a>
           )}
-        </div>
-      ) : (
-        <div className="h-56 bg-gradient-to-br from-[#111827] to-[#0F172A] flex items-center justify-center border-b-2 border-[#374151]">
+          {project.live_url && (
+            <motion.a 
+              href={project.live_url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#2DD4BF] to-[#14b8a6] flex items-center justify-center text-white shadow-2xl shadow-[#2DD4BF]/50"
+              whileHover={{ scale: 1.15, rotate: -5 }}
+              whileTap={{ scale: 0.9 }}
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: isHovered ? 0 : 30, opacity: isHovered ? 1 : 0 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+            >
+              {IconWrapper(FaExternalLinkAlt, { size: 20 })}
+            </motion.a>
+          )}
+        </motion.div>
+
+        {/* Featured Badge */}
+        {project.featured && (
           <motion.div
-            animate={{ 
-              scale: [1, 1.1, 1],
-              opacity: [0.3, 0.5, 0.3]
-            }}
-            transition={{ duration: 3, repeat: Infinity }}
+            className="absolute top-4 right-4 px-4 py-2 bg-gradient-to-r from-[#F59E0B] to-[#EF4444] rounded-xl flex items-center gap-2 shadow-xl"
+            initial={{ scale: 0, rotate: -45 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: "spring", delay: 0.2 }}
           >
-            <FaFolderOpen className="text-[#2DD4BF] text-6xl opacity-30" />
+            <FaStar className="text-white text-sm" />
+            <span className="text-white text-xs font-bold">Featured</span>
           </motion.div>
-        </div>
-      )}
+        )}
+      </div>
       
       {/* Content Section */}
       <div className="p-6 relative z-10">

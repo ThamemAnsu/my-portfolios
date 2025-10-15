@@ -2,6 +2,8 @@ import React, { useEffect, memo, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SidebarNav from './components/Navbar';
 import MobileNav from './components/MobileNav';
+import SpaceBackground from './components/SpaceBackground';
+import SpaceForeground from './components/SpaceForeground'; // Add this import
 
 // Lazy load components for better performance
 const Hero = lazy(() => import('./components/Hero'));
@@ -28,18 +30,31 @@ const MainContent = memo(() => {
   }, []);
   
   return (
-    <div className="App">
-      <SidebarNav />
-       <MobileNav />
-      <Suspense fallback={<LoadingSpinner />}>
-        <Hero />
-        <About />
-        <Skills />
-        <Projects />
-        <Experience />
-        <Contact />
-        <Footer />
-      </Suspense>
+    <div className="App relative">
+      {/* Space Background - Behind everything (z-0) */}
+      <SpaceBackground />
+      
+      {/* Navigation - Middle layer (z-10) */}
+      <div className="relative z-10">
+        <SidebarNav />
+        <MobileNav />
+      </div>
+      
+      {/* Main content - Middle layer (z-10) */}
+      <div className="relative z-10">
+        <Suspense fallback={<LoadingSpinner />}>
+          <Hero />
+          <About />
+          <Skills />
+          <Projects />
+          <Experience />
+          <Contact />
+          <Footer />
+        </Suspense>
+      </div>
+
+      {/* Space Foreground - In front of everything (z-40) */}
+      <SpaceForeground />
     </div>
   );
 });
