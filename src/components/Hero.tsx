@@ -5,6 +5,7 @@ import { IconWrapper } from '../utils/IconUtils';
 import { useProfile } from '../hooks/useSupabase';
 import SatelliteCodeDisplay from './SatelliteCodeDisplay';
 
+
 const ROLES = [
   'Frontend Developer',
   'AI Specialist',
@@ -107,7 +108,7 @@ const Hero: React.FC = () => {
                 transition={{ duration: 2, repeat: Infinity }}
                 className="w-3 h-3 rounded-full bg-[#2DD4BF] shadow-lg shadow-[#2DD4BF]/50"
               />
-              <span className="text-[#2DD4BF] font-mono text-sm tracking-wider font-semibold">
+              <span className="text-[#2DD4BF] font-bold text-sm tracking-widest  font-semibold">
                 Available for work
               </span>
             </motion.div>
@@ -284,56 +285,8 @@ const Hero: React.FC = () => {
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             >
               {/* Main Card */}
-              <div className="relative bg-gradient-to-br from-[#1F2937] via-[#374151] to-[#1F2937] p-8 rounded-3xl border border-[#374151] shadow-2xl backdrop-blur-xl overflow-hidden">
-                {/* Animated gradient overlay */}
-                <motion.div
-                  className="absolute inset-0 opacity-50"
-                  style={{
-                    background: 'radial-gradient(circle at 50% 50%, rgba(45,212,191,0.1) 0%, transparent 50%)',
-                  }}
-                  animate={{
-                    scale: [1, 1.5, 1],
-                    opacity: [0.3, 0.5, 0.3],
-                  }}
-                  transition={{ duration: 4, repeat: Infinity }}
-                />
-
-                {/* Code Preview */}
-                <div className="relative z-10 font-mono text-sm">
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="w-3 h-3 rounded-full bg-[#EF4444]"></div>
-                    <div className="w-3 h-3 rounded-full bg-[#F59E0B]"></div>
-                    <div className="w-3 h-3 rounded-full bg-[#10B981]"></div>
-                  </div>
-                  <pre className="text-[#94A3B8] leading-relaxed">
-                    <code>
-                      <span className="text-[#8B5CF6]">const</span> <span className="text-[#2DD4BF]">developer</span> = {'{\n'}
-                      {'  '}name: <span className="text-[#F59E0B]">"{profile?.name || 'Thamem'}"</span>,{'\n'}
-                      {'  '}skills: <span className="text-[#10B981]">['React', 'TS']</span>,{'\n'}
-                      {'  '}passion: <span className="text-[#F59E0B]">"∞"</span>,{'\n'}
-                      {'  '}coffee: <span className="text-[#F59E0B]">"☕☕☕"</span>{'\n'}
-                      {'}'};
-                    </code>
-                  </pre>
-                </div>  
-                {/* <SatelliteCodeDisplay/> */}
-
-                {/* Floating Icons */}
-                <motion.div
-                  className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-br from-[#2DD4BF] to-[#14b8a6] rounded-2xl flex items-center justify-center shadow-xl"
-                  animate={{ rotate: [0, 10, 0], y: [0, -10, 0] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                >
-                  <FaStar className="text-white text-2xl" />
-                </motion.div>
-
-                <motion.div
-                  className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-[#8B5CF6] to-[#6366F1] rounded-2xl flex items-center justify-center shadow-xl"
-                  animate={{ rotate: [0, -10, 0], y: [0, 10, 0] }}
-                  transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
-                >
-                  <FaCode className="text-white text-2xl" />
-                </motion.div>
+              <div >
+                <SatelliteCodeDisplay/>
               </div>
 
               {/* Decorative Elements */}
