@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { FaGithub, FaLinkedin, FaTwitter, FaArrowDown, FaCode, FaRocket, FaStar } from 'react-icons/fa';
 import { IconWrapper } from '../utils/IconUtils';
 import { useProfile } from '../hooks/useSupabase';
+import SatelliteCodeDisplay from './SatelliteCodeDisplay';
 
 const ROLES = [
   'Frontend Developer',
@@ -87,89 +88,9 @@ const Hero: React.FC = () => {
   }
   
   return (
-    <section id="home" className="min-h-screen flex items-center relative overflow-hidden bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A] pt-24 md:pt-20">
-      {/* Animated gradient orbs */}
-      <motion.div 
-        className="absolute top-0 right-0 w-[800px] h-[800px] rounded-full blur-3xl opacity-20"
-        style={{
-          background: 'radial-gradient(circle, rgba(45,212,191,0.4) 0%, rgba(45,212,191,0) 70%)',
-        }}
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.2, 0.3, 0.2],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-      />
-      
-      <motion.div 
-        className="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full blur-3xl opacity-20"
-        style={{
-          background: 'radial-gradient(circle, rgba(139,92,246,0.4) 0%, rgba(139,92,246,0) 70%)',
-        }}
-        animate={{
-          scale: [1.2, 1, 1.2],
-          opacity: [0.2, 0.3, 0.2],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 1
-        }}
-      />
-
-      {/* Interactive gradient following mouse */}
-      <motion.div
-        className="absolute w-96 h-96 rounded-full blur-3xl opacity-10 pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(45,212,191,0.6) 0%, transparent 70%)',
-        }}
-        animate={{
-          x: mousePosition.x - 192,
-          y: mousePosition.y - 192,
-        }}
-        transition={{
-          type: "spring",
-          damping: 30,
-          stiffness: 50,
-        }}
-      />
-      
-      {/* Grid pattern overlay */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSg0NSwyMTIsMTkxLDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40"></div>
-      
-      {/* Floating particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              width: Math.random() * 4 + 2,
-              height: Math.random() * 4 + 2,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              background: i % 2 === 0 ? '#2DD4BF' : '#8B5CF6',
-            }}
-            animate={{
-              y: [0, Math.random() * 200 - 100],
-              x: [0, Math.random() * 200 - 100],
-              scale: [1, Math.random() * 2 + 0.5, 1],
-              opacity: [0.1, 0.6, 0.1],
-            }}
-            transition={{
-              duration: Math.random() * 15 + 10,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
-      
+    <section id="home" className="min-h-screen flex items-center relative overflow-hidden pt-24 md:pt-20">
+  
+    
       <div className="container mx-auto px-6 relative z-10 max-w-7xl">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
@@ -193,20 +114,26 @@ const Hero: React.FC = () => {
 
             {/* Main Heading */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            >
-              <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-white mb-4 leading-[1.1]">
-                <span className="block">{profile?.intro_text || "Hello, I'm"}</span>
-                <span className="block bg-gradient-to-r from-[#2DD4BF] via-[#14b8a6] to-[#8B5CF6] bg-clip-text text-transparent">
-                  {profile?.name?.split(' ')[0] || 'Thamem'}
-                </span>
-                <span className="block text-white/90">
-                  {profile?.name?.split(' ').slice(1).join(' ') || 'Ansari'}
-                </span>
-              </h1>
-            </motion.div>
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6, delay: 0.1 }}
+>
+  <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-6xl font-black text-white mb-4 leading-[1.1]">
+    <span className="block">{profile?.intro_text || "Hello, I'm"}</span>
+    
+    {/* This new span wraps the full name to keep it on its own line */}
+    <span className="block">
+      <span className="bg-[#2DD4BF] bg-clip-text text-transparent">
+        {profile?.name?.split(' ')[0] || 'Thamem'}
+      </span>
+      {' '} {/* This adds a space between the names */}
+      <span className="text-white/90">
+        {profile?.name?.split(' ').slice(1).join(' ') || 'Ansari'}
+      </span>
+    </span>
+
+  </h1>
+</motion.div>
             
             {/* Typing Animation */}
             <motion.div 
@@ -244,11 +171,11 @@ const Hero: React.FC = () => {
               className="grid grid-cols-3 gap-4 mb-10"
             >
               <div className="bg-gradient-to-br from-[#1F2937] to-[#0F172A] p-4 rounded-xl border border-[#374151] hover:border-[#2DD4BF]/50 transition-all">
-                <div className="text-3xl font-bold text-[#2DD4BF] mb-1">50+</div>
+                <div className="text-3xl font-bold text-[#2DD4BF] mb-1">10+</div>
                 <div className="text-sm text-[#94A3B8]">Projects</div>
               </div>
               <div className="bg-gradient-to-br from-[#1F2937] to-[#0F172A] p-4 rounded-xl border border-[#374151] hover:border-[#8B5CF6]/50 transition-all">
-                <div className="text-3xl font-bold text-[#8B5CF6] mb-1">3+</div>
+                <div className="text-3xl font-bold text-[#8B5CF6] mb-1">2+</div>
                 <div className="text-sm text-[#94A3B8]">Years</div>
               </div>
               <div className="bg-gradient-to-br from-[#1F2937] to-[#0F172A] p-4 rounded-xl border border-[#374151] hover:border-[#F59E0B]/50 transition-all">
@@ -388,7 +315,8 @@ const Hero: React.FC = () => {
                       {'}'};
                     </code>
                   </pre>
-                </div>
+                </div>  
+                {/* <SatelliteCodeDisplay/> */}
 
                 {/* Floating Icons */}
                 <motion.div
@@ -427,10 +355,6 @@ const Hero: React.FC = () => {
         transition={{ delay: 1.5, duration: 0.8 }}
         onClick={() => scrollToSection('about')}
       >
-        <span className="text-[#94A3B8] font-mono text-sm mb-3 font-medium group-hover:text-[#2DD4BF] transition-colors">
-          Scroll to explore
-        </span>
-      
       </motion.div>
     </section>
   );
