@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Rocket } from 'lucide-react';
 
 const NAV_LINKS = [
   { name: 'Home', to: 'home' },
@@ -11,20 +11,23 @@ const NAV_LINKS = [
   { name: 'Contact', to: 'contact' }
 ] as const;
 
-const SpaceShuttleIcon: React.FC<{ isActive: boolean }> = ({ isActive }) => {
+const SpaceShuttleIcon: React.FC<{ isActive: boolean; direction: 'up' | 'down' }> = ({ isActive, direction }) => {
+  const rotation = direction === 'down' ? 180 : 0;
+  
   return (
     <motion.svg
-      width="30"
-      height="30"
+      width="24"
+      height="24"
       viewBox="0 0 200 200"
       initial={false}
       animate={{
+        rotate: rotation,
         filter: isActive 
-          ? 'drop-shadow(0 0 10px rgba(45,212,191,0.9)) drop-shadow(0 0 20px rgba(45,212,191,0.5))' 
-          : 'drop-shadow(0 0 5px rgba(0,0,0,0.5))',
+          ? 'drop-shadow(0 0 6px rgba(45,212,191,0.8))' 
+          : 'drop-shadow(0 0 3px rgba(0,0,0,0.5))',
       }}
+      transition={{ rotate: { type: 'spring', stiffness: 300, damping: 25 } }}
     >
-      {/* Rocket Exhaust */}
       <motion.g 
         style={{ transformOrigin: '100px 30px' }}
         animate={{ opacity: isActive ? 1 : 0, scale: isActive ? 1 : 0.5 }}
@@ -50,8 +53,6 @@ const SpaceShuttleIcon: React.FC<{ isActive: boolean }> = ({ isActive }) => {
           transition={{ duration: 0.15, repeat: Infinity }}
         />
       </motion.g>
-
-      {/* Shuttle Body */}
       <motion.g animate={{ opacity: isActive ? 1 : 0.4 }}>
         <path d="M 120 100 L 170 130 L 130 140 L 110 120 Z" fill="url(#shuttleBody)" stroke="#4B5563" strokeWidth="2" />
         <path d="M 80 100 L 30 130 L 70 140 L 90 120 Z" fill="url(#shuttleBody)" stroke="#4B5563" strokeWidth="2" />
@@ -62,7 +63,6 @@ const SpaceShuttleIcon: React.FC<{ isActive: boolean }> = ({ isActive }) => {
         <path d="M 100 35 L 125 70 L 100 60 Z" fill="#6B7280" stroke="#4B5563" strokeWidth="2" />
         <path d="M 100 35 L 75 70 L 100 60 Z" fill="url(#shuttleBody)" stroke="#4B5563" strokeWidth="2" />
       </motion.g>
-
       <defs>
         <linearGradient id="shuttleBody" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="#9CA3AF" />
@@ -82,31 +82,44 @@ const MobileNav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [scrollProgress, setScrollProgress] = useState(0);
-  const scrollTimeout = useRef<NodeJS.Timeout>();
+  const [shuttleDirection, setShuttleDirection] = useState<'up' | 'down'>('down');
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const isScrollingRef = useRef(false);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      const navHeight = 70;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - navHeight;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
+      isScrollingRef.current = true;
+      
+      const currentIndex = NAV_LINKS.findIndex(link => link.to === activeSection);
+      const targetIndex = NAV_LINKS.findIndex(link => link.to === sectionId);
+      
+      setShuttleDirection(targetIndex > currentIndex ? 'down' : 'up');
+      setActiveSection(sectionId);
+      
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       setIsOpen(false);
+
+      setTimeout(() => {
+        isScrollingRef.current = false;
+      }, 1000);
     }
   };
 
-  // Track scroll progress
   useEffect(() => {
+    let lastScrollY = window.scrollY;
+    
     const handleScroll = () => {
+      const currentScrollY = window.scrollY;
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight - windowHeight;
-      const scrolled = window.scrollY;
-      const progress = (scrolled / documentHeight) * 100;
-      setScrollProgress(Math.min(progress, 100));
+      const progress = documentHeight > 0 ? (currentScrollY / documentHeight) * 100 : 0;
+      setScrollProgress(Math.min(Math.max(progress, 0), 100));
+      
+      if (!isScrollingRef.current) {
+        setShuttleDirection(currentScrollY > lastScrollY ? 'down' : 'up');
+      }
+      lastScrollY = currentScrollY;
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -114,122 +127,112 @@ const MobileNav: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Intersection observer for active section
   useEffect(() => {
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
     const observerOptions = {
-      rootMargin: '-20% 0px -60% 0px',
-      threshold: 0.1
+      root: null,
+      rootMargin: '-10% 0px -70% 0px',
+      threshold: [0, 0.25, 0.5, 0.75, 1]
     };
     
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      if (isScrollingRef.current) return;
+
+      let maxRatio = 0;
+      let mostVisibleSection = '';
+
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
+        if (entry.intersectionRatio > maxRatio) {
+          maxRatio = entry.intersectionRatio;
+          mostVisibleSection = entry.target.id;
         }
       });
+
+      if (mostVisibleSection && maxRatio > 0) {
+        setActiveSection(mostVisibleSection);
+      }
     };
 
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    observerRef.current = new IntersectionObserver(observerCallback, observerOptions);
     
-    // Observe all sections
-    NAV_LINKS.forEach(({ to }) => {
-      const element = document.getElementById(to);
-      if (element) {
-        observer.observe(element);
-      }
-    });
+    const timeoutId = setTimeout(() => {
+      NAV_LINKS.forEach(({ to }) => {
+        const element = document.getElementById(to);
+        if (element && observerRef.current) {
+          observerRef.current.observe(element);
+        }
+      });
+    }, 300);
 
     return () => {
-      observer.disconnect();
-      if (scrollTimeout.current) {
-        clearTimeout(scrollTimeout.current);
+      clearTimeout(timeoutId);
+      if (observerRef.current) {
+        observerRef.current.disconnect();
       }
     };
   }, []);
 
+  const activeIndex = NAV_LINKS.findIndex(link => link.to === activeSection);
+  const shuttleYPosition = activeIndex >= 0 ? activeIndex * 50 : 0;
+  const displayProgress = Math.round(scrollProgress) || 0;
+
   return (
     <>
-      {/* Mobile Header */}
+      {/* Compact Mobile Header */}
       <motion.header
-        className="md:hidden fixed top-0 left-0 right-0 z-[60] bg-gradient-to-b from-[#0F172A] via-[#0F172A] to-[#0F172A]/95 backdrop-blur-xl border-b border-[#1F2937]"
+        className="md:hidden fixed top-0 left-0 right-0 z-[60] backdrop-blur-xl bg-[#0F172A]/95 border-b border-[#2DD4BF]/20"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 100 }}
       >
-        <div className="flex items-center justify-between px-6 py-4">
-          {/* Logo/Brand */}
-          <motion.div
-            className="flex items-center gap-2"
-            whileTap={{ scale: 0.95 }}
-          >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#2DD4BF] to-[#14b8a6] flex items-center justify-center">
-              <span className="text-[#0F172A] font-bold text-lg">T</span>
+        <div className="flex items-center justify-between px-4 py-2.5">
+          <motion.div className="flex items-center gap-2" whileTap={{ scale: 0.95 }}>
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#2DD4BF] to-[#8B5CF6] flex items-center justify-center">
+              <Rocket className="w-4 h-4 text-[#0F172A]" />
             </div>
-            <span className="text-white font-bold text-lg tracking-tight">
-              Thamem
-            </span>
+            <div>
+              <span className="block text-white font-bold text-sm leading-none">THAMEM</span>
+              <span className="block text-[#2DD4BF] text-[8px] font-mono tracking-widest">PORTFOLIO</span>
+            </div>
           </motion.div>
 
-          {/* Progress Indicator */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <div className="relative">
-              <svg width="28" height="28" className="transform -rotate-90">
-                <circle 
-                  cx="14" 
-                  cy="14" 
-                  r="12" 
-                  stroke="#1F2937" 
-                  strokeWidth="2.5" 
-                  fill="none" 
-                  opacity="0.3" 
-                />
+              <svg width="32" height="32" className="transform -rotate-90">
+                <circle cx="16" cy="16" r="13" stroke="rgba(45,212,191,0.1)" strokeWidth="2.5" fill="none" />
                 <motion.circle
-                  cx="14" 
-                  cy="14" 
-                  r="12" 
+                  cx="16" cy="16" r="13" 
                   stroke="#2DD4BF" 
                   strokeWidth="2.5" 
                   fill="none" 
                   strokeLinecap="round"
-                  strokeDasharray={`${2 * Math.PI * 12}`}
-                  initial={{ strokeDashoffset: 2 * Math.PI * 12 }}
-                  animate={{ strokeDashoffset: 2 * Math.PI * 12 * (1 - scrollProgress / 100) }}
+                  strokeDasharray={`${2 * Math.PI * 13}`}
+                  initial={{ strokeDashoffset: 2 * Math.PI * 13 }}
+                  animate={{ strokeDashoffset: 2 * Math.PI * 13 * (1 - displayProgress / 100) }}
                   transition={{ type: 'spring', damping: 30, stiffness: 100 }}
-                  style={{ filter: 'drop-shadow(0 0 6px rgba(45,212,191,0.8))' }}
                 />
               </svg>
-              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-[#2DD4BF]">
-                {Math.round(scrollProgress) || 0}
+              <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold text-[#2DD4BF]">
+                {displayProgress}
               </span>
             </div>
 
-            {/* Menu Button */}
             <motion.button
               onClick={() => setIsOpen(!isOpen)}
-              className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-[#1F2937] to-[#0F172A] border-2 border-[#374151] flex items-center justify-center"
+              className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#1F2937] to-[#0F172A] border-2 border-[#2DD4BF]/30 flex items-center justify-center"
               whileTap={{ scale: 0.9 }}
-              whileHover={{ borderColor: '#2DD4BF' }}
             >
               <AnimatePresence mode="wait">
                 {isOpen ? (
-                  <motion.div
-                    key="close"
-                    initial={{ rotate: -90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: 90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <X className="w-5 h-5 text-[#2DD4BF]" />
+                  <motion.div key="close" initial={{ rotate: -90 }} animate={{ rotate: 0 }} exit={{ rotate: 90 }}>
+                    <X className="w-4 h-4 text-[#2DD4BF]" />
                   </motion.div>
                 ) : (
-                  <motion.div
-                    key="menu"
-                    initial={{ rotate: 90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: -90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Menu className="w-5 h-5 text-[#2DD4BF]" />
+                  <motion.div key="menu" initial={{ rotate: 90 }} animate={{ rotate: 0 }} exit={{ rotate: -90 }}>
+                    <Menu className="w-4 h-4 text-[#2DD4BF]" />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -238,128 +241,72 @@ const MobileNav: React.FC = () => {
         </div>
       </motion.header>
 
-      {/* Mobile Menu Overlay */}
+      {/* Compact Dropdown Menu */}
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Backdrop */}
             <motion.div
-              className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[55]"
+              className="md:hidden fixed inset-0 z-[55] bg-black/40 backdrop-blur-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
             />
 
-            {/* Menu Panel */}
             <motion.div
-              className="md:hidden fixed inset-y-0 right-0 w-80 max-w-[85vw] bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A] border-l border-[#1F2937] z-[60] overflow-y-auto"
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              className="md:hidden fixed top-[56px] left-3 right-3 z-[60] rounded-xl overflow-hidden bg-[#0F172A]/98 border-2 border-[#2DD4BF]/30 shadow-2xl"
+              initial={{ y: -20, opacity: 0, scale: 0.95 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              exit={{ y: -20, opacity: 0, scale: 0.95 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             >
-              {/* Close Button */}
-              <motion.button
-                onClick={() => setIsOpen(false)}
-                className="absolute top-6 right-6 w-10 h-10 rounded-xl bg-gradient-to-br from-[#1F2937] to-[#0F172A] border-2 border-[#374151] hover:border-[#2DD4BF] flex items-center justify-center z-10"
-                whileTap={{ scale: 0.9 }}
-                whileHover={{ 
-                  borderColor: '#2DD4BF',
-                  boxShadow: '0 0 20px rgba(45,212,191,0.4)'
-                }}
-                initial={{ opacity: 0, rotate: -90 }}
-                animate={{ opacity: 1, rotate: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <X className="w-5 h-5 text-[#2DD4BF]" />
-              </motion.button>
+              <div className="p-3">
+                <div className="relative mb-3">
+                  <motion.div
+                    className="absolute -left-0.5 top-0 pointer-events-none z-10"
+                    animate={{ y: shuttleYPosition }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  >
+                    <SpaceShuttleIcon isActive={true} direction={shuttleDirection} />
+                  </motion.div>
 
-              {/* Menu Content */}
-              <div className="p-6 pt-20">
-                {/* Navigation Links */}
-                <nav className="space-y-2">
-                  {NAV_LINKS.map((link, index) => {
-                    const isActive = activeSection === link.to;
-                    
-                    return (
-                      <motion.button
-                        key={link.to}
-                        onClick={() => scrollToSection(link.to)}
-                        className={`w-full flex items-center gap-4 px-4 py-4 rounded-xl transition-all ${
-                          isActive
-                            ? 'bg-gradient-to-r from-[#2DD4BF]/20 to-[#14b8a6]/10 border-2 border-[#2DD4BF]'
-                            : 'bg-[#1F2937]/50 border-2 border-[#374151] hover:border-[#2DD4BF]/50'
-                        }`}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        style={
-                          isActive
-                            ? {
-                                boxShadow: '0 0 30px rgba(45,212,191,0.3), inset 0 0 20px rgba(45,212,191,0.1)',
-                              }
-                            : {}
-                        }
-                      >
-                        {/* Shuttle Icon */}
-                        <div className="flex-shrink-0">
-                          <SpaceShuttleIcon isActive={isActive} />
-                        </div>
-
-                        {/* Link Text */}
-                        <span
-                          className={`text-lg font-bold tracking-wide ${
-                            isActive ? 'text-[#2DD4BF]' : 'text-gray-300'
-                          }`}
+                  <nav className="space-y-1.5 pl-7">
+                    {NAV_LINKS.map((link, index) => {
+                      const isActive = activeSection === link.to;
+                      
+                      return (
+                        <motion.button
+                          key={link.to}
+                          onClick={() => scrollToSection(link.to)}
+                          className="group relative w-full"
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.04 }}
+                          whileTap={{ scale: 0.97 }}
                         >
-                          {link.name}
-                        </span>
+                          <div className={`relative px-3 py-2 rounded-lg overflow-hidden transition-all ${isActive ? '' : 'hover:translate-x-1'}`}>
+                            <div className={`absolute inset-0 transition-opacity ${isActive ? 'opacity-100 bg-gradient-to-r from-[#2DD4BF]/25 to-transparent' : 'opacity-0 group-hover:opacity-100 bg-[#374151]/30'}`} />
+                            <div className={`absolute inset-0 rounded-lg transition-all ${isActive ? 'border-2 border-[#2DD4BF] shadow-[0_0_15px_rgba(45,212,191,0.4)]' : 'border-2 border-transparent group-hover:border-[#2DD4BF]/30'}`} />
+                            <div className="relative flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <div className={`w-0.5 h-4 rounded-full ${isActive ? 'bg-[#2DD4BF]' : 'bg-gray-600'}`} />
+                                <span className={`text-sm font-bold ${isActive ? 'text-[#2DD4BF]' : 'text-gray-300 group-hover:text-white'}`}>
+                                  {link.name}
+                                </span>
+                              </div>
+                              {isActive && (
+                                <motion.div layoutId="mobileActiveIndicator" className="flex gap-1">
+                                  <div className="w-1 h-1 rounded-full bg-[#2DD4BF]" />
+                                </motion.div>
+                              )}
+                            </div>
+                          </div>
+                        </motion.button>
+                      );
+                    })}
+                  </nav>
+                </div>
 
-                        {/* Active Indicator */}
-                        {isActive && (
-                          <motion.div
-                            layoutId="mobileActiveIndicator"
-                            className="ml-auto w-2 h-2 rounded-full bg-[#2DD4BF]"
-                            style={{
-                              boxShadow: '0 0 10px rgba(45,212,191,0.8)',
-                            }}
-                          />
-                        )}
-                      </motion.button>
-                    );
-                  })}
-                </nav>
-
-                {/* Decorative Space Elements */}
-                <motion.div
-                  className="mt-8 p-6 rounded-xl bg-gradient-to-br from-[#1F2937]/50 to-[#0F172A]/50 border border-[#374151]"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <motion.div
-                      className="w-3 h-3 rounded-full bg-[#2DD4BF]"
-                      animate={{
-                        scale: [1, 1.3, 1],
-                        boxShadow: [
-                          '0 0 10px rgba(45,212,191,0.6)',
-                          '0 0 20px rgba(45,212,191,1)',
-                          '0 0 10px rgba(45,212,191,0.6)',
-                        ],
-                      }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    />
-                    <span className="text-sm font-mono text-[#2DD4BF] font-bold">
-                      MISSION CONTROL
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-400 leading-relaxed">
-                    Navigate through space to explore different sections of the portfolio.
-                  </p>
-                </motion.div>
               </div>
             </motion.div>
           </>
