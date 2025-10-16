@@ -65,8 +65,7 @@ const Projects: React.FC = () => {
   }
 
   return (
-    <section id="projects" className="py-32 relative w-full  overflow-hidden">
-           
+    <section id="projects" className="py-32 relative w-full overflow-hidden">
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
         {/* Header */}
         <motion.div
@@ -140,7 +139,7 @@ const Projects: React.FC = () => {
           ))}
         </motion.div>
         
-        {/* Projects Grid */}
+        {/* Projects Grid - Fixed Height */}
         <motion.div 
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
           layout
@@ -153,6 +152,7 @@ const Projects: React.FC = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ delay: index * 0.05, duration: 0.4 }}
+              className="h-full"
             >
               <ProjectCard 
                 project={project}
@@ -227,12 +227,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   index
 }) => {
   const isHovered = hoveredProject === project.id;
-  // Use project image or space-themed placeholder - use index directly for variety
   const imageUrl = project.image_url || getSpacePlaceholder(index);
   
   return (
     <motion.div
-      className="group relative bg-gradient-to-br from-[#1F2937] to-[#0F172A] rounded-3xl overflow-hidden border-2 border-[#374151] hover:border-[#2DD4BF]/50 transition-all duration-300"
+      className="group relative bg-gradient-to-br from-[#1F2937] to-[#0F172A] rounded-3xl overflow-hidden border-2 border-[#374151] hover:border-[#2DD4BF]/50 transition-all duration-300 h-full flex flex-col"
       onMouseEnter={() => setHoveredProject(project.id)}
       onMouseLeave={() => setHoveredProject(null)}
       whileHover={{ y: -10, boxShadow: '0 25px 50px -12px rgba(45, 212, 191, 0.25)' }}
@@ -246,8 +245,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         }}
       />
 
-      {/* Image Section */}
-      <div className="relative h-56 overflow-hidden bg-[#111827]">
+      {/* Image Section - Fixed Height */}
+      <div className="relative h-56 flex-shrink-0 overflow-hidden bg-[#111827]">
         <motion.img 
           src={imageUrl} 
           alt={project.title}
@@ -312,21 +311,21 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         )}
       </div>
       
-      {/* Content Section */}
-      <div className="p-6 relative z-10">
+      {/* Content Section - Flexible Height with Fixed Structure */}
+      <div className="p-6 relative z-10 flex flex-col flex-1">
         <div className="flex items-start justify-between mb-3">
-          <h3 className="text-xl font-black text-white group-hover:text-[#2DD4BF] transition-colors duration-300 flex-1">
+          <h3 className="text-xl font-black text-white group-hover:text-[#2DD4BF] transition-colors duration-300 flex-1 line-clamp-2 min-h-[3.5rem]">
             {project.title}
           </h3>
           <FaCode className="text-[#2DD4BF] text-xl flex-shrink-0 ml-2" />
         </div>
         
-        <p className="text-[#94A3B8] mb-6 text-sm leading-relaxed line-clamp-3">
+        <p className="text-[#94A3B8] mb-6 text-sm leading-relaxed line-clamp-3 min-h-[4.5rem]">
           {project.description}
         </p>
         
-        {/* Technologies */}
-        <div className="flex flex-wrap gap-2">
+        {/* Technologies - Fixed at Bottom */}
+        <div className="flex flex-wrap gap-2 mt-auto">
           {project.technologies.slice(0, 4).map((tech, index) => (
             <motion.span 
               key={tech} 
