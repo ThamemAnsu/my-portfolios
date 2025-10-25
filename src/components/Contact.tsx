@@ -31,28 +31,28 @@ const Contact: React.FC = () => {
   };
 
   const contactInfo = [
-    {
-      icon: FaEnvelope,
-      title: "Email",
-      content: "thamemansari55@gmail.com",
-      link: "mailto:thamemansari55@gmail.com",
-      color: "#2DD4BF"
-    },
-    {
-      icon: FaPhoneAlt,
-      title: "Phone",
-      content: "+91 6381360124",
-      link: "tel:+916381360124",
-      color: "#8B5CF6"
-    },
-    {
-      icon: FaMapMarkerAlt,
-      title: "Location",
-      content: "Chennai, Tamil Nadu",
-      link: "https://www.google.com/maps/place/Chennai",
-      color: "#F59E0B"
-    }
-  ];
+  {
+    icon: FaEnvelope,
+    title: "Email",
+    content: "thamemansari55@gmail.com",
+    link: "mailto:thamemansari55@gmail.com",
+    color: "#2DD4BF"
+  },
+  {
+    icon: FaPhoneAlt,
+    title: "Phone",
+    content: "+91 6381360124",
+    link: "tel:+916381360124",
+    color: "#8B5CF6"
+  },
+  {
+    icon: FaMapMarkerAlt,
+    title: "Location",
+    content: "Chennai, Tamil Nadu",
+    link: "https://maps.google.com/?q=Chennai,Tamil+Nadu,India", // ✅ Changed this
+    color: "#F59E0B"
+  }
+];
 
   const socialLinks = [
     { icon: FaGithub, href: "#", label: "GitHub" },
