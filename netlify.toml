@@ -6,7 +6,7 @@
   from = "/*"
   to = "/index.html"
   status = 200
-  force = true
+  # Remove force = true - this is the key!
 
 [[headers]]
   for = "/manifest.json"
