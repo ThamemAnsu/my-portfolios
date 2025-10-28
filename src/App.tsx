@@ -143,7 +143,7 @@ const MainContent = memo(() => {
       </div>
 
       {/* Resume Viewer - Floating button (z-50) */}
-      <ResumeViewer resumeUrl='https://tscpiiiregsqkvztjxba.supabase.co/storage/v1/object/public/resumes/Thamem_M_(October_2025).pdf' />
+      <ResumeViewer resumeUrl='https://tscpiiiregsqkvztjxba.supabase.co/storage/v1/object/sign/resumes/Thamem_M_(October_2025).pdf.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9iMTZkYjYxMi03ZDlmLTQ0YmUtOTM4Ny0yNjU5OTJjNjkzMDQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJyZXN1bWVzL1RoYW1lbV9NXyhPY3RvYmVyXzIwMjUpLnBkZi5wZGYiLCJpYXQiOjE3NjE2MzIzNDYsImV4cCI6MTkxOTMxMjM0Nn0.es9n1smBIZrk9OVMpCYJgjE6uCJ6p7xThs-zwM4pRxA' />
 
       {/* Welcome Popup - Highest layer (z-200) */}
       <WelcomePopup />
