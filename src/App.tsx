@@ -86,6 +86,8 @@ import SidebarNav from './components/Navbar';
 import MobileNav from './components/MobileNav';
 import SpaceBackground from './components/SpaceBackground';
 import SpaceForeground from './components/SpaceForeground';
+import ResumeViewer from './components/ResumeViewer';
+import WelcomePopup from './components/WelcomePopup';
 
 // Lazy load components for better performance
 const Hero = lazy(() => import('./components/Hero'));
@@ -93,6 +95,7 @@ const About = lazy(() => import('./components/About'));
 const Skills = lazy(() => import('./components/Skills'));
 const Projects = lazy(() => import('./components/Projects'));
 const Experience = lazy(() => import('./components/Experience'));
+const Certifications = lazy(() => import('./components/Certifications'));
 const Contact = lazy(() => import('./components/Contact'));
 const Footer = lazy(() => import('./components/Footer'));
 const AdminPanel = lazy(() => import('./components/adminpanel'));
@@ -124,6 +127,7 @@ const MainContent = memo(() => {
           <Skills />
           <Projects />
           <Experience />
+          <Certifications />
           <Contact />
           <Footer />
         </Suspense>
@@ -137,6 +141,12 @@ const MainContent = memo(() => {
         <SidebarNav />
         <MobileNav />
       </div>
+
+      {/* Resume Viewer - Floating button (z-50) */}
+      <ResumeViewer resumeUrl='https://tscpiiiregsqkvztjxba.supabase.co/storage/v1/object/public/resumes/Thamem_M_(October_2025).pdf' />
+
+      {/* Welcome Popup - Highest layer (z-200) */}
+      <WelcomePopup />
     </div>
   );
 });

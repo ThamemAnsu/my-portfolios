@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { name: 'Skills', to: 'skills' },
   { name: 'Projects', to: 'projects' },
   { name: 'Experience', to: 'experience' },
+  {name :'Certifications', to: 'certifications' },
   { name: 'Contact', to: 'contact' }
 ] as const;
 

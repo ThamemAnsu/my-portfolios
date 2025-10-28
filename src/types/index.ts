@@ -31,3 +31,18 @@ export interface Project {
     description: string;
   }
   
+  export interface Certification {
+  id: string;
+  title: string;
+  issuer: string;
+  date: string;
+  credential_url?: string;
+  credential_id?: string;
+  logo_url?: string;
+  skills: string[];
+  description?: string;
+  is_featured: boolean;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+}
