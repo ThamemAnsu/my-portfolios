@@ -15,19 +15,19 @@ module.exports = {
           100: 'rgba(15, 23, 42, 0.1)',
         },
         secondary: {
-          DEFAULT: '#3B82F6', // Professional blue
-          light: '#60A5FA',
-          dark: '#2563EB',
-          50: 'rgba(59, 130, 246, 0.05)',
-          100: 'rgba(59, 130, 246, 0.1)',
-          200: 'rgba(59, 130, 246, 0.2)',
-          300: 'rgba(59, 130, 246, 0.3)',
-          400: 'rgba(59, 130, 246, 0.4)',
+          DEFAULT: '#EF4444', // Brand Red
+          light: '#F87171',
+          dark: '#DC2626',
+          50: 'rgba(239, 68, 68, 0.05)',
+          100: 'rgba(239, 68, 68, 0.1)',
+          200: 'rgba(239, 68, 68, 0.2)',
+          300: 'rgba(239, 68, 68, 0.3)',
+          400: 'rgba(239, 68, 68, 0.4)',
         },
         accent: {
-          DEFAULT: '#8B5CF6', // Purple for accents
-          light: '#A78BFA',
-          dark: '#7C3AED',
+          DEFAULT: '#DC2626', // Accent Red
+          light: '#EF4444',
+          dark: '#B91C1C',
         },
         success: {
           DEFAULT: '#10B981', // Green for success states
@@ -45,10 +45,10 @@ module.exports = {
           dark: '#DC2626',
         },
         dark: {
-          DEFAULT: '#0F172A', // Slate-900
-          lighter: '#1E293B', // Slate-800
-          lightest: '#334155', // Slate-700
-          card: '#1E293B', // Slate-800
+          DEFAULT: '#F3F4F6', // Light gray background
+          lighter: '#FFFFFF', // White container
+          lightest: '#E2E8F0', // Light gray border
+          card: '#FFFFFF', // White card background
         },
         light: {
           DEFAULT: '#F8FAFC', // Slate-50

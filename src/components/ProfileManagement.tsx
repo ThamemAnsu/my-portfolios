@@ -8,8 +8,8 @@ import {
 } from 'react-icons/fa';
 
 // Initialize Supabase client
-const supabaseUrl = 'https://tscpiiiregsqkvztjxba.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzY3BpaWlyZWdzcWt2enRqeGJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAyMDk3NzcsImV4cCI6MjA3NTc4NTc3N30._4oCoWFMwwBOgh5_OtZM4i-fg-XYvYaw4frKQN77zIY';
+const supabaseUrl = 'https://redekfpzbqdlhhcsnxpi.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZGVrZnB6YnFkbGhoY3NueHBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4MzIxMjgsImV4cCI6MjA5ODQwODEyOH0._txyfFm7GE2fL9QgcgnuBJoPb2S3zu_1nixDed69kac';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 interface Profile {
@@ -288,9 +288,9 @@ const ProfileManagement: React.FC = () => {
   
   if (!profile) {
     return (
-      <div className="p-6 bg-dark-card rounded-xl border border-gray-700 text-center">
+      <div className="p-6 bg-white rounded-xl border border-gray-200 shadow-sm text-center">
         <FaUser className="mx-auto text-4xl text-gray-400 mb-4" />
-        <h3 className="text-xl font-bold text-white mb-2">Profile Not Found</h3>
+        <h3 className="text-xl font-bold text-gray-800 mb-2">Profile Not Found</h3>
         <p className="text-gray-400 mb-6">There was an error loading your profile.</p>
         <button
           onClick={() => window.location.reload()}
@@ -309,7 +309,7 @@ const ProfileManagement: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <h2 className="text-3xl font-bold mb-8 text-white">Profile Management</h2>
+        <h2 className="text-3xl font-bold mb-8 text-gray-800">Profile Management</h2>
         
         {error && (
           <div className="mb-6 p-4 rounded-lg bg-red-900/30 border border-red-900/50 text-red-400">
@@ -324,13 +324,13 @@ const ProfileManagement: React.FC = () => {
         )}
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Avatar Section */}
-          <div className="bg-dark-card rounded-xl border border-gray-700 p-6">
-            <h3 className="text-xl font-bold text-white mb-6">Profile Picture</h3>
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-6">Profile Picture</h3>
             
             <div className="flex flex-col md:flex-row md:items-center gap-6">
               <div className="md:w-1/3 flex justify-center">
                 <div className="relative group">
-                  <div className="w-40 h-40 rounded-full overflow-hidden bg-dark-lightest border-2 border-gray-700 group-hover:border-secondary transition-colors">
+                  <div className="w-40 h-40 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200 group-hover:border-red-400 transition-colors">
                     {avatarPreview ? (
                       <img 
                         src={avatarPreview} 
@@ -338,7 +338,7 @@ const ProfileManagement: React.FC = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-dark-lightest text-gray-400">
+                      <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
                         <FaUser size={40} />
                       </div>
                     )}
@@ -385,7 +385,7 @@ const ProfileManagement: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="mt-4 px-4 py-2 bg-dark-lightest text-white hover:bg-gray-700 rounded-lg flex items-center transition-colors"
+                  className="mt-4 px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg flex items-center transition-colors"
                 >
                   <FaUpload className="mr-2" />
                   {avatarPreview ? 'Change Photo' : 'Upload Photo'}
@@ -395,8 +395,8 @@ const ProfileManagement: React.FC = () => {
           </div>
           
           {/* Basic Info */}
-          <div className="bg-dark-card rounded-xl border border-gray-700 p-6">
-            <h3 className="text-xl font-bold text-white mb-6">Basic Information</h3>
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-6">Basic Information</h3>
             
             <div className="grid md:grid-cols-2 gap-6">
               <div className="form-group">
@@ -506,7 +506,7 @@ const ProfileManagement: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => resumeInputRef.current?.click()}
-                      className="px-4 py-2 bg-dark-lightest text-white hover:bg-gray-700 rounded-r-lg flex items-center transition-colors"
+                      className="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-r-lg flex items-center transition-colors"
                     >
                       <FaUpload className="mr-2" />
                       Browse
@@ -548,8 +548,8 @@ const ProfileManagement: React.FC = () => {
           </div>
           
           {/* Social Links */}
-          <div className="bg-dark-card rounded-xl border border-gray-700 p-6">
-            <h3 className="text-xl font-bold text-white mb-6">Social Links</h3>
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-6">Social Links</h3>
             
             <div className="grid md:grid-cols-2 gap-6">
               <div className="form-group">
@@ -632,7 +632,7 @@ const ProfileManagement: React.FC = () => {
               type="button"
               onClick={() => window.location.reload()}
               disabled={saving}
-              className="px-6 py-3 bg-dark-lightest text-white hover:bg-gray-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Reset
             </button>

@@ -1,69 +1,78 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaEnvelope, FaMapMarkerAlt, FaPhoneAlt, FaPaperPlane, FaLinkedin, FaGithub, FaTwitter, FaCheckCircle, FaRocket } from 'react-icons/fa';
+import { FaEnvelope, FaMapMarkerAlt, FaPhoneAlt, FaPaperPlane, FaLinkedin, FaGithub, FaTwitter, FaCheckCircle } from 'react-icons/fa';
+import { TextScramble } from './ui/TextScramble';
+import { supabase } from '../lib/supabase';
 
 const Contact: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
-  
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  
+  const [headerHovered, setHeaderHovered] = useState(false);
+
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
-  
+
   const handleFormSubmit = async () => {
+    if (!formData.name || !formData.email || !formData.message) {
+      alert("Please fill in Name, Email, and Message fields.");
+      return;
+    }
     setIsSubmitting(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setIsSubmitted(true);
-    setFormData({ name: '', email: '', subject: '', message: '' });
-    
-    setTimeout(() => setIsSubmitted(false), 5000);
-    setIsSubmitting(false);
+    try {
+      const { error } = await supabase
+        .from('messages')
+        .insert([
+          {
+            name: formData.name,
+            email: formData.email,
+            subject: formData.subject || 'Direct Contact Form',
+            message: formData.message,
+            read: false
+          }
+        ]);
+      if (error) throw error;
+      setIsSubmitted(true);
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setTimeout(() => setIsSubmitted(false), 5000);
+    } catch (err: any) {
+      console.error("Error submitting contact message:", err);
+      alert("Failed to send message: " + (err.message || err));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contactInfo = [
-  {
-    icon: FaEnvelope,
-    title: "Email",
-    content: "thamemansari55@gmail.com",
-    link: "mailto:thamemansari55@gmail.com",
-    color: "#2DD4BF"
-  },
-  {
-    icon: FaPhoneAlt,
-    title: "Phone",
-    content: "+91 6381360124",
-    link: "tel:+916381360124",
-    color: "#8B5CF6"
-  },
-  {
-    icon: FaMapMarkerAlt,
-    title: "Location",
-    content: "Chennai, Tamil Nadu",
-    link: "https://maps.google.com/?q=Chennai,Tamil+Nadu,India", // ✅ Changed this
-    color: "#F59E0B"
-  }
-];
+    { icon: FaEnvelope,     title: 'Email',    content: 'thamemansari55@gmail.com', link: 'mailto:thamemansari55@gmail.com', color: '#EF4444'  },
+    { icon: FaPhoneAlt,     title: 'Phone',    content: '+91 6381360124',            link: 'tel:+916381360124',              color: '#EF4444'  },
+    { icon: FaMapMarkerAlt, title: 'Location', content: 'Chennai, Tamil Nadu',       link: 'https://maps.google.com/?q=Chennai,Tamil+Nadu,India', color: '#EF4444' },
+  ];
 
   const socialLinks = [
-    { icon: FaGithub, href: "#", label: "GitHub" },
-    { icon: FaLinkedin, href: "#", label: "LinkedIn" },
-    { icon: FaTwitter, href: "#", label: "Twitter" }
+    { icon: FaGithub,   href: 'https://github.com/ThamemAnsu',          color: '#111827' },
+    { icon: FaLinkedin, href: 'https://linkedin.com/in/thamemansari',   color: '#0A66C2' },
+    { icon: FaTwitter,  href: 'https://twitter.com/thamemansari',       color: '#1DA1F2' },
   ];
-  
+
+  const inputStyle: React.CSSProperties = {
+    background: 'rgba(0,0,0,0.03)',
+    border: '1px solid rgba(0,0,0,0.08)',
+    borderRadius: 14,
+    color: 'var(--text-primary)',
+    padding: '12px 16px',
+    width: '100%',
+    fontSize: 14,
+    outline: 'none',
+    fontFamily: 'Inter, sans-serif',
+    transition: 'border-color 0.2s',
+  };
+
   return (
-    <section id="contact" className="py-20 md:py-32 relative overflow-hidden">
+    <section id="contact" className="py-20 md:py-32 relative overflow-hidden" style={{ background: 'var(--bg-primary)' }}>
       <div className="container mx-auto px-4 sm:px-6 max-w-7xl relative z-10">
-        
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -72,64 +81,81 @@ const Contact: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#2DD4BF]/10 rounded-full mb-6 border border-[#2DD4BF]/20"
+          <div
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full mb-6 font-bold text-sm"
+            style={{
+              background: 'rgba(239,68,68,0.06)',
+              border: '1px solid rgba(239,68,68,0.25)',
+              color: '#EF4444',
+              fontFamily: 'Nunito, sans-serif'
+            }}
           >
-            <FaRocket className="text-[#2DD4BF] text-sm" />
-            <span className="text-[#2DD4BF] font-mono text-xs tracking-wider font-semibold">
-              GET IN TOUCH
-            </span>
-          </motion.div>
+            ✉️ Get In Touch
+          </div>
 
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4">
-            Let's Build Something{' '}
-            <span className="bg-gradient-to-r from-[#2DD4BF] to-[#8B5CF6] bg-clip-text text-transparent">
-              Amazing
-            </span>
+          <h2
+            className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 cursor-default select-none"
+            style={{ fontFamily: 'Nunito, sans-serif', color: 'var(--text-primary)' }}
+            onMouseEnter={() => setHeaderHovered(true)}
+            onMouseLeave={() => setHeaderHovered(false)}
+          >
+            <TextScramble text="Let's Build Something " trigger={headerHovered} />
+            <TextScramble
+              text="Amazing"
+              trigger={headerHovered}
+              className="bg-gradient-to-r from-[#EF4444] to-[#DC2626] bg-clip-text text-transparent"
+            />
           </h2>
-          
-          <p className="text-[#94A3B8] text-base md:text-lg max-w-2xl mx-auto">
+
+          <motion.div
+            className="h-1.5 rounded-full mx-auto mb-5"
+            style={{ background: 'linear-gradient(90deg, #EF4444, #DC2626, #EF4444)' }}
+            initial={{ width: 0 }}
+            whileInView={{ width: 128 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+          />
+
+          <p className="text-base md:text-lg max-w-2xl mx-auto" style={{ color: 'var(--text-muted)' }}>
             Have a project in mind? Let's discuss how we can work together to bring your vision to life.
           </p>
         </motion.div>
 
         {/* Contact Cards */}
-        <motion.div 
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-12 md:mb-16"
+        <motion.div
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 mb-12 md:mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
         >
-          {contactInfo.map((info, index) => (
+          {contactInfo.map((info, i) => (
             <motion.a
               href={info.link}
               target="_blank"
               rel="noopener noreferrer"
-              key={index}
-              className="group relative bg-gradient-to-br from-[#1e293b] to-[#0f172a] p-6 rounded-2xl border border-[#334155] hover:border-[#2DD4BF]/50 transition-all duration-300"
-              whileHover={{ y: -5 }}
+              key={i}
+              className="group relative p-5 rounded-2xl flex items-start gap-4 transition-all"
+              style={{
+                background: '#FFFFFF',
+                border: '1px solid rgba(0,0,0,0.06)',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.02)',
+              }}
+              whileHover={{ y: -5, borderColor: '#EF4444', boxShadow: '0 12px 30px rgba(239,68,68,0.1)' }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
+              transition={{ delay: i * 0.1 }}
             >
-              <div className="flex items-start gap-4">
-                <div 
-                  className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ backgroundColor: `${info.color}20` }}
-                >
-                  <info.icon className="text-xl" style={{ color: info.color }} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-white font-bold mb-1 text-sm">{info.title}</h3>
-                  <p className="text-[#94A3B8] group-hover:text-[#2DD4BF] transition-colors text-sm break-words">
-                    {info.content}
-                  </p>
-                </div>
+              <div
+                className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: 'rgba(239,68,68,0.06)' }}
+              >
+                <info.icon size={18} style={{ color: '#EF4444' }} />
+              </div>
+              <div>
+                <h3 className="font-black text-sm mb-0.5" style={{ color: 'var(--text-primary)', fontFamily: 'Nunito, sans-serif' }}>{info.title}</h3>
+                <p className="text-sm transition-colors text-gray-600" style={{ fontFamily: 'Inter, sans-serif' }}>{info.content}</p>
               </div>
             </motion.a>
           ))}
@@ -137,100 +163,130 @@ const Contact: React.FC = () => {
 
         {/* Main Grid */}
         <div className="grid lg:grid-cols-2 gap-8">
-          
+
           {/* Form */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="relative bg-gradient-to-br from-[#1e293b] to-[#0f172a] p-6 md:p-8 rounded-3xl border border-[#334155]"
+            className="relative p-6 md:p-8 rounded-3xl"
+            style={{
+              background: '#FFFFFF',
+              border: '1px solid rgba(0,0,0,0.06)',
+              boxShadow: '0 8px 30px rgba(0,0,0,0.02)',
+            }}
           >
             {isSubmitted ? (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col items-center justify-center text-center py-12 md:py-16"
+                className="flex flex-col items-center justify-center text-center py-16"
               >
-                <motion.div 
-                  className="w-20 h-20 bg-gradient-to-br from-[#10B981] to-[#059669] rounded-2xl flex items-center justify-center mb-6"
+                <motion.div
+                  className="w-20 h-20 rounded-2xl flex items-center justify-center mb-6"
+                  style={{ background: 'linear-gradient(135deg, #EF4444, #DC2626)' }}
                   animate={{ scale: [1, 1.1, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
-                  <FaCheckCircle className="text-white text-3xl" />
+                  <FaCheckCircle style={{ color: '#fff', fontSize: 32 }} />
                 </motion.div>
-                <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">Message Sent!</h3>
-                <p className="text-[#94A3B8] max-w-sm">
-                  Thank you for reaching out. I'll get back to you soon!
-                </p>
+                <h3 className="text-2xl font-black mb-3" style={{ color: 'var(--text-primary)', fontFamily: 'Nunito, sans-serif' }}>Message Sent! 🎉</h3>
+                <p style={{ color: 'var(--text-muted)' }}>Thank you for reaching out. I'll get back to you soon!</p>
               </motion.div>
             ) : (
               <div className="space-y-5">
-                <div className="grid md:grid-cols-2 gap-5">
+                <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-white text-sm font-semibold mb-2">Name</label>
+                    <label className="block text-sm font-bold mb-2" style={{ color: 'var(--text-secondary)', fontFamily: 'Nunito, sans-serif' }}>Name</label>
                     <input
                       type="text"
                       placeholder="John Doe"
                       value={formData.name}
-                      onChange={(e) => handleInputChange('name', e.target.value)}
-                      className="w-full px-4 py-3 bg-[#0f172a] border border-[#334155] rounded-xl text-white placeholder-[#64748b] focus:outline-none focus:border-[#2DD4BF] transition-all"
+                      onChange={e => handleInputChange('name', e.target.value)}
+                      style={inputStyle}
+                      onFocus={e => { e.currentTarget.style.borderColor = '#EF4444'; }}
+                      onBlur={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.08)'; }}
                     />
                   </div>
                   <div>
-                    <label className="block text-white text-sm font-semibold mb-2">Email</label>
+                    <label className="block text-sm font-bold mb-2" style={{ color: 'var(--text-secondary)', fontFamily: 'Nunito, sans-serif' }}>Email</label>
                     <input
                       type="email"
                       placeholder="john@example.com"
                       value={formData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      className="w-full px-4 py-3 bg-[#0f172a] border border-[#334155] rounded-xl text-white placeholder-[#64748b] focus:outline-none focus:border-[#2DD4BF] transition-all"
+                      onChange={e => handleInputChange('email', e.target.value)}
+                      style={inputStyle}
+                      onFocus={e => { e.currentTarget.style.borderColor = '#EF4444'; }}
+                      onBlur={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.08)'; }}
                     />
                   </div>
                 </div>
-                
+
                 <div>
-                  <label className="block text-white text-sm font-semibold mb-2">Subject</label>
+                  <label className="block text-sm font-bold mb-2" style={{ color: 'var(--text-secondary)', fontFamily: 'Nunito, sans-serif' }}>Subject</label>
                   <input
                     type="text"
                     placeholder="Project Inquiry"
                     value={formData.subject}
-                    onChange={(e) => handleInputChange('subject', e.target.value)}
-                    className="w-full px-4 py-3 bg-[#0f172a] border border-[#334155] rounded-xl text-white placeholder-[#64748b] focus:outline-none focus:border-[#2DD4BF] transition-all"
+                    onChange={e => handleInputChange('subject', e.target.value)}
+                    style={inputStyle}
+                    onFocus={e => { e.currentTarget.style.borderColor = '#EF4444'; }}
+                    onBlur={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.08)'; }}
                   />
                 </div>
-                
+
                 <div>
-                  <label className="block text-white text-sm font-semibold mb-2">Message</label>
+                  <label className="block text-sm font-bold mb-2" style={{ color: 'var(--text-secondary)', fontFamily: 'Nunito, sans-serif' }}>Message</label>
                   <textarea
                     placeholder="Tell me about your project..."
                     value={formData.message}
-                    onChange={(e) => handleInputChange('message', e.target.value)}
+                    onChange={e => handleInputChange('message', e.target.value)}
                     rows={5}
-                    className="w-full px-4 py-3 bg-[#0f172a] border border-[#334155] rounded-xl text-white placeholder-[#64748b] focus:outline-none focus:border-[#2DD4BF] transition-all resize-none"
+                    style={{ ...inputStyle, resize: 'none' }}
+                    onFocus={e => { e.currentTarget.style.borderColor = '#EF4444'; }}
+                    onBlur={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.08)'; }}
                   />
                 </div>
-                
-                <motion.button 
+
+                <motion.button
                   onClick={handleFormSubmit}
                   disabled={isSubmitting}
-                  className="w-full px-6 py-4 bg-gradient-to-r from-[#2DD4BF] to-[#14b8a6] text-[#0f172a] font-bold text-base rounded-xl hover:shadow-lg hover:shadow-[#2DD4BF]/30 disabled:from-[#334155] disabled:to-[#1e293b] disabled:text-[#64748b] disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                  className="w-full py-4 font-black text-base rounded-2xl flex items-center justify-center gap-2 relative overflow-hidden text-white"
+                  style={{
+                    background: isSubmitting
+                      ? 'rgba(0,0,0,0.08)'
+                      : 'linear-gradient(135deg, #EF4444, #DC2626)',
+                    fontFamily: 'Nunito, sans-serif',
+                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                    boxShadow: isSubmitting ? 'none' : '0 8px 30px rgba(239,68,68,0.25)',
+                    border: 'none',
+                  }}
                   whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
                   whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
                 >
+                  {!isSubmitting && (
+                    <motion.div
+                      className="absolute inset-0 bg-white/20"
+                      initial={{ x: '-100%' }}
+                      whileHover={{ x: '100%' }}
+                      transition={{ duration: 0.5 }}
+                    />
+                  )}
                   {isSubmitting ? (
                     <>
                       <motion.div
-                        className="w-5 h-5 border-2 border-[#0f172a] border-t-transparent rounded-full"
+                        className="w-5 h-5 border-2 border-t-transparent rounded-full"
+                        style={{ borderColor: 'var(--text-muted)', borderTopColor: 'transparent' }}
                         animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                       />
-                      <span>Sending...</span>
+                      <span className="text-gray-500">Sending...</span>
                     </>
                   ) : (
                     <>
-                      <span>Send Message</span>
-                      <FaPaperPlane />
+                      <span className="relative">Send Message</span>
+                      <FaPaperPlane className="relative" />
                     </>
                   )}
                 </motion.button>
@@ -239,63 +295,108 @@ const Contact: React.FC = () => {
           </motion.div>
 
           {/* Info Card */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.4 }}
-            className="relative bg-gradient-to-br from-[#1e293b] to-[#0f172a] p-6 md:p-8 rounded-3xl border border-[#334155] flex flex-col"
+            className="relative p-6 md:p-8 rounded-3xl flex flex-col"
+            style={{
+              background: '#FFFFFF',
+              border: '1px solid rgba(0,0,0,0.06)',
+              boxShadow: '0 8px 30px rgba(0,0,0,0.02)',
+            }}
           >
             <div className="flex-1">
-              <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
-                Let's Create Together
+              <h3
+                className="text-2xl md:text-3xl font-black mb-4"
+                style={{ color: 'var(--text-primary)', fontFamily: 'Nunito, sans-serif' }}
+              >
+                Let's Create{' '}
+                <span className="bg-gradient-to-r from-[#EF4444] to-[#DC2626] bg-clip-text text-transparent">
+                  Together
+                </span>
               </h3>
-              <p className="text-[#94A3B8] mb-8 leading-relaxed">
-                I'm always interested in hearing about new projects and opportunities. 
-                Whether you have a question or just want to say hi, I'll try my best to get back to you!
+              <p className="mb-8 leading-relaxed text-gray-600">
+                I'm always interested in hearing about new projects and opportunities.
+                Whether you have a question or just want to say hi, I'll try my best to get back to you! ✌️
               </p>
-              
+
               {/* Social Links */}
               <div className="mb-8">
-                <h4 className="text-white font-semibold mb-4 flex items-center gap-2">
-                  <span className="w-8 h-8 rounded-lg bg-[#2DD4BF]/20 flex items-center justify-center">
-                    <span className="text-[#2DD4BF] text-sm">🚀</span>
-                  </span>
+                <h4
+                  className="font-black text-sm mb-4 flex items-center gap-2"
+                  style={{ color: 'var(--text-primary)', fontFamily: 'Nunito, sans-serif' }}
+                >
+                  <span
+                    className="w-7 h-7 rounded-lg flex items-center justify-center text-sm"
+                    style={{ background: 'rgba(239,68,68,0.06)' }}
+                  >🎨</span>
                   Connect with me
                 </h4>
                 <div className="flex gap-3">
-                  {socialLinks.map((social, index) => (
+                  {socialLinks.map((s, i) => (
                     <motion.a
-                      key={index}
-                      href={social.href}
+                      key={i}
+                      href={s.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-11 h-11 rounded-lg bg-[#0f172a] border border-[#334155] hover:border-[#2DD4BF] flex items-center justify-center text-[#94A3B8] hover:text-white transition-all"
-                      whileHover={{ y: -3, scale: 1.05 }}
+                      className="w-11 h-11 rounded-xl flex items-center justify-center transition-all"
+                      style={{
+                        background: 'rgba(0,0,0,0.03)',
+                        border: '1px solid rgba(0,0,0,0.08)',
+                        color: 'var(--text-muted)',
+                      }}
+                      whileHover={{ y: -4, scale: 1.1, color: s.color, borderColor: s.color, boxShadow: `0 8px 24px rgba(239,68,68,0.15)` }}
                       whileTap={{ scale: 0.95 }}
                     >
-                      <social.icon className="text-lg" />
+                      <s.icon size={18} />
                     </motion.a>
                   ))}
                 </div>
               </div>
+
+              {/* Fun facts */}
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { emoji: '⚡', text: 'Usually replies in 24h' },
+                  { emoji: '🌍', text: 'Open to remote work' },
+                  { emoji: '🎤', text: 'Tamil AI enthusiast' },
+                  { emoji: '☕', text: 'Coffee-fueled builder' },
+                ].map((f, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-gray-700"
+                    style={{ background: 'rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.06)', fontFamily: 'Nunito, sans-serif' }}
+                  >
+                    <span className="text-base">{f.emoji}</span>
+                    {f.text}
+                  </div>
+                ))}
+              </div>
             </div>
-            
-            {/* Response Time Badge */}
-            <div className="mt-auto">
-              <div className="flex items-center gap-4 p-5 bg-gradient-to-br from-[#2DD4BF]/10 to-transparent rounded-2xl border border-[#2DD4BF]/20">
+
+            {/* Quick Response Badge */}
+            <div className="mt-8">
+              <motion.div
+                className="flex items-center gap-4 p-4 rounded-2xl"
+                style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)' }}
+                animate={{ borderColor: ['rgba(239,68,68,0.2)', 'rgba(239,68,68,0.45)', 'rgba(239,68,68,0.2)'] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              >
                 <motion.div
-                  className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#2DD4BF] to-[#14b8a6] flex items-center justify-center flex-shrink-0"
+                  className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style={{ background: 'linear-gradient(135deg, #EF4444, #DC2626)' }}
                   animate={{ rotate: [0, 5, 0, -5, 0] }}
                   transition={{ duration: 5, repeat: Infinity }}
                 >
-                  <FaEnvelope className="text-white text-xl" />
+                  <FaEnvelope style={{ color: '#fff', fontSize: 18 }} />
                 </motion.div>
                 <div>
-                  <p className="text-white font-bold text-base">Quick Response</p>
-                  <p className="text-[#94A3B8] text-sm">Usually within 24 hours</p>
+                  <p className="font-black text-sm" style={{ color: 'var(--text-primary)', fontFamily: 'Nunito, sans-serif' }}>Quick Response</p>
+                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Usually within 24 hours</p>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </motion.div>
         </div>

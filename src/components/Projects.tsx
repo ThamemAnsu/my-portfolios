@@ -1,51 +1,294 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { FaGithub, FaExternalLinkAlt, FaFolderOpen, FaRocket, FaCode, FaStar } from 'react-icons/fa';
-import { useProjects } from '../hooks/useSupabase';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { FaGithub, FaExternalLinkAlt, FaFolderOpen, FaCode, FaStar, FaThLarge, FaBookOpen } from 'react-icons/fa';
 import { IconWrapper } from '../utils/IconUtils';
+import { useProjects } from '../hooks/useSupabase';
 import type { Project } from '../lib/supabase';
+import { TextScramble } from './ui/TextScramble';
 
-// Space-themed placeholder images
-const getSpacePlaceholder = (index: number): string => {
-  const spaceImages = [
-    'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=800&h=600&fit=crop', // Galaxy
-    'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800&h=600&fit=crop', // Milky Way
-    'https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=800&h=600&fit=crop', // Planet
-    'https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=800&h=600&fit=crop', // Nebula
-    'https://images.unsplash.com/photo-1608178398319-48f814d0750c?w=800&h=600&fit=crop', // Space station
-    'https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=800&h=600&fit=crop', // Stars
-    'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=600&fit=crop', // Earth from space
-    'https://images.unsplash.com/photo-1464802686167-b939a6910659?w=800&h=600&fit=crop', // Northern lights space
+// Developer-themed placeholder images (art/code themed)
+const getArtPlaceholder = (index: number): string => {
+  const images = [
+    'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop', // code screen
+    'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=600&fit=crop', // laptop coding
+    'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&h=600&fit=crop', // dev workspace
+    'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&h=600&fit=crop', // team coding
+    'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop', // monitor code
+    'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=600&fit=crop', // typing
   ];
-  return spaceImages[index % spaceImages.length];
+  return images[index % images.length];
+};
+
+// Process peek data per project
+const PROJECT_PROCESS: Record<string, { diagram: string; snippet: string; note: string }> = {
+  default: {
+    diagram: `User → API → LangChain → DB
+              ↓          ↓
+           Whisper    Supabase
+              ↓
+           Response`,
+    snippet: `// Core handler\nasync function process(input) {\n  const result = await chain.call(input);\n  await db.save(result);\n  return result;\n}`,
+    note: 'Event-driven architecture with async queues for scalability.',
+  },
+};
+
+interface FlipCardProps {
+  project: Project;
+  index: number;
+}
+
+const FlipCard: React.FC<FlipCardProps> = ({ project, index }) => {
+  const [flipped, setFlipped] = useState(false);
+  const imageUrl = project.image_url || getArtPlaceholder(index);
+  const process = PROJECT_PROCESS[project.id] || PROJECT_PROCESS.default;
+  const accentColors = ['#FF6B6B', '#6C63FF', '#FFD93D', '#4ECDC4', '#FF8FA3'];
+  const accent = accentColors[index % accentColors.length];
+
+  return (
+    <div
+      className="flip-card h-[440px]"
+      style={{ minHeight: 440 }}
+    >
+      <motion.div
+        className={`flip-card-inner h-full ${flipped ? 'flipped' : ''}`}
+        animate={{ rotateY: flipped ? 180 : 0 }}
+        transition={{ duration: 0.65, ease: [0.4, 0.2, 0.2, 1] }}
+        style={{ transformStyle: 'preserve-3d' }}
+      >
+        {/* ─── FRONT ─── */}
+        <div
+          className="flip-card-front absolute inset-0 rounded-3xl overflow-hidden flex flex-col"
+          style={{
+            background: 'var(--bg-elevated)',
+            border: '1px solid var(--border-subtle)',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.03)',
+          }}
+        >
+          {/* Image */}
+          <div className="relative h-52 flex-shrink-0 overflow-hidden" style={{ background: '#F3F4F6' }}>
+            <img
+              src={imageUrl}
+              alt={project.title}
+              className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+            />
+            <div
+              className="absolute inset-0"
+              style={{ background: `linear-gradient(to top, var(--bg-elevated), ${accent}05, transparent)` }}
+            />
+            {project.featured && (
+              <div
+                className="absolute top-3 right-3 px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-xs font-black"
+                style={{ background: 'linear-gradient(135deg, #EF4444, #DC2626)', color: '#ffffff' }}
+              >
+                <FaStar size={10} /> Featured
+              </div>
+            )}
+          </div>
+
+          {/* Content */}
+          <div className="p-5 flex flex-col flex-1">
+            <h3
+              className="text-lg font-black mb-2 line-clamp-2"
+              style={{ color: 'var(--text-primary)', fontFamily: 'Nunito, sans-serif' }}
+            >
+              {project.title}
+            </h3>
+            <p className="text-sm leading-relaxed mb-4 line-clamp-3 flex-1" style={{ color: 'var(--text-secondary)' }}>
+              {project.description}
+            </p>
+
+            {/* Tech tags */}
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {project.technologies.slice(0, 4).map((tech) => (
+                <span
+                  key={tech}
+                  className="text-[10px] px-2.5 py-1 rounded-lg font-bold font-mono"
+                  style={{ background: `${accent}12`, color: accent, border: `1px solid ${accent}25` }}
+                >
+                  {tech}
+                </span>
+              ))}
+              {project.technologies.length > 4 && (
+                <span className="text-[10px] px-2.5 py-1 rounded-lg font-bold font-mono" style={{ background: 'rgba(0,0,0,0.04)', color: 'var(--text-muted)' }}>
+                  +{project.technologies.length - 4}
+                </span>
+              )}
+            </div>
+
+            {/* Footer row */}
+            <div className="flex items-center justify-between">
+              <div className="flex gap-2">
+                {project.github_url && (
+                  <a
+                    href={project.github_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:scale-110"
+                    style={{ background: 'rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.08)', color: 'var(--text-muted)' }}
+                    onClick={e => e.stopPropagation()}
+                  >
+                    {IconWrapper(FaGithub, { size: 16 })}
+                  </a>
+                )}
+                {project.live_url && (
+                  <a
+                    href={project.live_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:scale-110"
+                    style={{ background: `${accent}15`, border: `1px solid ${accent}30`, color: accent }}
+                    onClick={e => e.stopPropagation()}
+                  >
+                    {IconWrapper(FaExternalLinkAlt, { size: 14 })}
+                  </a>
+                )}
+              </div>
+              <button
+                onClick={() => setFlipped(true)}
+                className="text-xs font-black px-4 py-2 rounded-xl transition-all hover:scale-105"
+                style={{
+                  background: `${accent}15`,
+                  border: `1px solid ${accent}30`,
+                  color: accent,
+                  fontFamily: 'Nunito, sans-serif',
+                }}
+              >
+                How I Built It →
+              </button>
+            </div>
+          </div>
+
+          {/* Bottom accent line */}
+          <div
+            className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full"
+            style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }}
+          />
+        </div>
+
+        {/* ─── BACK (Process Peek) ─── */}
+        <div
+          className="flip-card-back absolute inset-0 rounded-3xl p-5 flex flex-col"
+          style={{
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-subtle)',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.03)',
+            transform: 'rotateY(180deg)',
+          }}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <FaCode style={{ color: accent }} size={16} />
+              <span
+                className="font-black text-sm"
+                style={{ color: accent, fontFamily: 'Nunito, sans-serif' }}
+              >
+                Process Peek 🔍
+              </span>
+            </div>
+            <button
+              onClick={() => setFlipped(false)}
+              className="text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all hover:scale-105"
+              style={{ background: 'rgba(0,0,0,0.04)', color: 'var(--text-muted)', border: '1px solid rgba(0,0,0,0.08)' }}
+            >
+              ← Back
+            </button>
+          </div>
+
+          {/* Architecture diagram */}
+          <div
+            className="rounded-xl p-4 mb-3 font-mono text-xs leading-relaxed flex-shrink-0"
+            style={{ background: '#F3F4F6', border: `1px solid rgba(0,0,0,0.06)`, color: 'var(--text-primary)' }}
+          >
+            <div className="text-[9px] mb-2 font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>{"// Architecture"}</div>
+            <pre style={{ whiteSpace: 'pre-wrap', color: '#B91C1C' }}>{process.diagram}</pre>
+          </div>
+
+          {/* Code snippet */}
+          <div
+            className="rounded-xl p-4 mb-3 font-mono text-xs flex-1 overflow-hidden"
+            style={{ background: '#F3F4F6', border: `1px solid rgba(0,0,0,0.06)` }}
+          >
+            <div className="text-[9px] mb-2 font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>{"// Code Snippet"}</div>
+            <pre style={{ whiteSpace: 'pre-wrap', color: 'var(--text-secondary)', fontSize: '10px', overflow: 'hidden' }}>{process.snippet}</pre>
+          </div>
+
+          {/* Dev note */}
+          <div
+            className="rounded-xl px-4 py-3 text-xs font-bold"
+            style={{ background: `${accent}0D`, border: `1px solid ${accent}25`, color: 'var(--text-secondary)', fontFamily: 'Nunito, sans-serif' }}
+          >
+            💡 {process.note}
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
 };
 
 const Projects: React.FC = () => {
   const { projects, loading, error } = useProjects();
-  const [hoveredProject, setHoveredProject] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<string>('all');
+  const [headerHovered, setHeaderHovered] = useState(false);
+  const [layoutMode, setLayoutMode] = useState<'story' | 'grid'>('story');
+  const [activeProjectIndex, setActiveProjectIndex] = useState(0);
 
   const allTechnologies = ['all', ...Array.from(new Set(
     projects.flatMap(project => project.technologies)
   ))];
 
-  const filteredProjects = activeFilter === 'all' 
-    ? projects 
-    : projects.filter(project => 
-        project.technologies.includes(activeFilter)
+  const filteredProjects = activeFilter === 'all'
+    ? projects
+    : projects.filter(p => p.technologies.includes(activeFilter));
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Track active project card in story mode using Intersection Observer
+  useEffect(() => {
+    if (layoutMode !== 'story' || filteredProjects.length === 0) return;
+
+    // Reset index when filter changes
+    setActiveProjectIndex(0);
+
+    const observers = sectionRefs.current.map((ref, idx) => {
+      if (!ref) return null;
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.15) {
+            setActiveProjectIndex(idx);
+          }
+        },
+        {
+          threshold: [0.15, 0.3, 0.5, 0.7],
+          rootMargin: "-25% 0px -25% 0px"
+        }
       );
+      observer.observe(ref);
+      return observer;
+    });
+
+    return () => {
+      observers.forEach(obs => obs?.disconnect());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projects, activeFilter, layoutMode]);
+
+  // Framer Motion useScroll for parallax translations
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
+  const yBg = useTransform(scrollYProgress, [0, 1], [-60, 60]);
+  const yMockup = useTransform(scrollYProgress, [0, 1], [-20, 20]);
+  const yBadges = useTransform(scrollYProgress, [0, 1], [60, -60]);
+  const rotateMockup = useTransform(scrollYProgress, [0, 1], [-2, 2]);
 
   if (loading) {
     return (
-      <section id="projects" className="py-32 relative w-full bg-gradient-to-b from-[#0F172A] via-[#1E293B] to-[#0F172A]">
-        <div className="container mx-auto px-6 max-w-7xl">
-          <div className="flex items-center justify-center">
-            <motion.div 
-              className="w-16 h-16 border-4 border-[#2DD4BF] border-t-transparent rounded-full"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            />
-          </div>
+      <section id="projects" className="py-32 relative w-full">
+        <div className="container mx-auto px-6 max-w-7xl flex items-center justify-center">
+          <div className="spinner" />
         </div>
       </section>
     );
@@ -53,11 +296,11 @@ const Projects: React.FC = () => {
 
   if (error) {
     return (
-      <section id="projects" className="py-32 relative w-full bg-gradient-to-b from-[#0F172A] via-[#1E293B] to-[#0F172A]">
+      <section id="projects" className="py-32 relative w-full">
         <div className="container mx-auto px-6 max-w-7xl">
-          <div className="bg-gradient-to-br from-red-500/10 to-red-600/5 border border-red-500/30 rounded-2xl p-8 text-center backdrop-blur-xl">
-            <h3 className="text-red-400 font-bold text-xl mb-2">Error Loading Projects</h3>
-            <p className="text-red-300 text-sm">{error}</p>
+          <div className="rounded-2xl p-8 text-center" style={{ background: 'rgba(255,107,107,0.08)', border: '1px solid rgba(255,107,107,0.3)' }}>
+            <h3 className="font-black text-xl mb-2" style={{ color: '#FF6B6B', fontFamily: 'Nunito, sans-serif' }}>Error Loading Projects</h3>
+            <p className="text-sm" style={{ color: '#A0A0B8' }}>{error}</p>
           </div>
         </div>
       </section>
@@ -67,305 +310,250 @@ const Projects: React.FC = () => {
   return (
     <section id="projects" className="py-32 relative w-full overflow-hidden">
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
+
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0.5, y: 10 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-20 text-center"
+          className="mb-16 text-center"
         >
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0.5 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#2DD4BF]/10 to-[#8B5CF6]/10 rounded-full mb-6 border border-[#2DD4BF]/30"
+          <div
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full mb-6 font-bold text-sm"
+            style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.25)', color: '#EF4444', fontFamily: 'Nunito, sans-serif' }}
           >
-            <FaRocket className="text-[#2DD4BF] text-lg" />
-            <span className="text-[#2DD4BF] font-mono text-sm tracking-wider font-semibold uppercase">
-              My Work
-            </span>
-          </motion.div>
+            🚀 My Work
+          </div>
 
-          <h2 className="text-5xl md:text-6xl font-black text-white mb-6">
-            Featured <span className="bg-gradient-to-r from-[#2DD4BF] to-[#14b8a6] bg-clip-text text-transparent">Projects</span>
+          <h2
+            className="text-5xl md:text-6xl font-black mb-5 cursor-default select-none"
+            style={{ fontFamily: 'Nunito, sans-serif', color: 'var(--text-primary)' }}
+            onMouseEnter={() => setHeaderHovered(true)}
+            onMouseLeave={() => setHeaderHovered(false)}
+          >
+            <TextScramble text="Featured " trigger={headerHovered} />
+            <TextScramble
+              text="Projects"
+              trigger={headerHovered}
+              className="bg-gradient-to-r from-[#EF4444] to-[#DC2626] bg-clip-text text-transparent"
+            />
           </h2>
-          
-          <motion.div 
-            className="h-1.5 w-32 bg-gradient-to-r from-[#2DD4BF] via-[#8B5CF6] to-[#F59E0B] rounded-full mx-auto mb-6"
-            initial={{ width: 0, opacity: 0.5 }}
-            animate={{ width: 128, opacity: 1 }}
+
+          <motion.div
+            className="h-1.5 rounded-full mx-auto mb-5"
+            style={{ background: 'linear-gradient(90deg, #EF4444, #DC2626, #EF4444)' }}
+            initial={{ width: 0 }}
+            animate={{ width: 128 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           />
-
-          <p className="text-[#94A3B8] text-lg max-w-2xl mx-auto">
-            Explore my latest work and side projects
+          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+            Flip a card to see the architecture & code behind each project 🃏
           </p>
         </motion.div>
-        
-        {/* Filter Buttons */}
-        <motion.div 
+
+        {/* Filter */}
+        <motion.div
           className="flex flex-wrap justify-center gap-3 mb-12"
-          initial={{ opacity: 0.5, y: 10 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
         >
-          {allTechnologies.slice(0, 8).map((tech, index) => (
-            <motion.button
-              key={tech}
-              onClick={() => setActiveFilter(tech)}
-              className={`px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 border-2 relative overflow-hidden ${
-                activeFilter === tech
-                  ? 'bg-gradient-to-r from-[#2DD4BF] to-[#14b8a6] text-[#0F172A] shadow-xl shadow-[#2DD4BF]/30 border-[#2DD4BF]'
-                  : 'bg-gradient-to-br from-[#1F2937] to-[#0F172A] text-[#94A3B8] hover:text-white border-[#374151] hover:border-[#2DD4BF]/50'
-              }`}
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-            >
-              {activeFilter === tech && (
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent"
-                  initial={{ x: '-100%' }}
-                  animate={{ x: '100%' }}
-                  transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 2 }}
-                />
-              )}
-              <span className="relative z-10">
+          {allTechnologies.slice(0, 8).map((tech, i) => {
+            const active = activeFilter === tech;
+            return (
+              <motion.button
+                key={tech}
+                onClick={() => setActiveFilter(tech)}
+                className="px-5 py-2.5 rounded-xl text-sm font-black transition-all"
+                style={{
+                  background: active ? 'linear-gradient(135deg, #EF4444, #DC2626)' : 'rgba(0,0,0,0.02)',
+                  color: active ? '#ffffff' : 'var(--text-secondary)',
+                  border: active ? 'none' : '1px solid rgba(0,0,0,0.06)',
+                  fontFamily: 'Nunito, sans-serif',
+                  boxShadow: active ? '0 6px 20px rgba(239,68,68,0.2)' : 'none',
+                }}
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+              >
                 {tech.charAt(0).toUpperCase() + tech.slice(1)}
-              </span>
-            </motion.button>
-          ))}
-        </motion.div>
-        
-        {/* Projects Grid - Fixed Height */}
-        <motion.div 
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          layout
-        >
-          {filteredProjects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              layout
-              initial={{ opacity: 0.5, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ delay: index * 0.05, duration: 0.4 }}
-              className="h-full"
-            >
-              <ProjectCard 
-                project={project}
-                hoveredProject={hoveredProject}
-                setHoveredProject={setHoveredProject}
-                index={index}
-              />
-            </motion.div>
-          ))}
+              </motion.button>
+            );
+          })}
         </motion.div>
 
-        {filteredProjects.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center py-20"
+        {/* Layout Switcher */}
+        <div className="flex justify-center gap-4 mb-12">
+          <button
+            onClick={() => setLayoutMode('story')}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition-all ${layoutMode === 'story' ? 'bg-gradient-to-r from-[#EF4444] to-[#DC2626] text-white shadow-md shadow-red-500/20' : 'bg-transparent text-gray-500 border border-gray-200 hover:border-red-500/50 hover:text-red-500'}`}
+            style={{ fontFamily: 'Nunito, sans-serif' }}
           >
-            <FaFolderOpen className="text-[#2DD4BF] text-6xl mx-auto mb-4 opacity-30" />
-            <p className="text-[#94A3B8] text-lg">No projects found for this filter</p>
-          </motion.div>
+            <FaBookOpen /> Story Mode
+          </button>
+          <button
+            onClick={() => setLayoutMode('grid')}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition-all ${layoutMode === 'grid' ? 'bg-gradient-to-r from-[#EF4444] to-[#DC2626] text-white shadow-md shadow-red-500/20' : 'bg-transparent text-gray-500 border border-gray-200 hover:border-red-500/50 hover:text-red-500'}`}
+            style={{ fontFamily: 'Nunito, sans-serif' }}
+          >
+            <FaThLarge /> Classic Grid
+          </button>
+        </div>
+
+        {/* Projects View */}
+        {layoutMode === 'story' && filteredProjects.length > 0 ? (
+          <div ref={containerRef} className="flex flex-col lg:flex-row gap-12 relative items-start">
+
+            {/* Sticky Visual Column (Left) */}
+            <div
+              className="hidden lg:block w-1/2 sticky top-24 h-[calc(100vh-160px)] rounded-3xl overflow-hidden shadow-2xl relative"
+              style={{
+                background: 'var(--bg-elevated)',
+                border: '1px solid var(--border-subtle)',
+                minHeight: '520px'
+              }}
+            >
+              {/* Parallax Background layer */}
+              <motion.div
+                className="absolute inset-0 opacity-15 filter blur-[60px] pointer-events-none"
+                style={{
+                  y: yBg,
+                  background: `radial-gradient(circle, ${activeProjectIndex % 2 === 0 ? '#EF4444' : '#B32F2F'} 0%, transparent 65%)`
+                }}
+              />
+
+              {/* Tactile grid pattern */}
+              <div className="absolute inset-0 opacity-5 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]" />
+
+              <div className="h-full flex flex-col items-center justify-center p-8 relative z-10">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeProjectIndex}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.4 }}
+                    className="w-full flex flex-col items-center justify-center h-full relative"
+                  >
+                    {/* Device Mockup with Parallax */}
+                    <motion.div
+                      className="w-full max-w-[420px] aspect-[4/3] rounded-2xl overflow-hidden border-4 border-gray-800 shadow-2xl bg-gray-900 relative mt-4"
+                      style={{ y: yMockup, rotate: rotateMockup }}
+                    >
+                      <div className="h-6 bg-gray-800 flex items-center px-4 gap-1.5 border-b border-gray-700">
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#FF5F56]" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#27C93F]" />
+                        <span className="text-[9px] font-mono text-gray-500 mx-auto">localhost:3000/{filteredProjects[activeProjectIndex]?.id}</span>
+                      </div>
+                      <img
+                        src={filteredProjects[activeProjectIndex]?.image_url || getArtPlaceholder(activeProjectIndex)}
+                        alt="Project Screen"
+                        className="w-full h-[calc(100%-24px)] object-cover"
+                      />
+                    </motion.div>
+
+                    {/* Floating Tech Badges (Parallax layer) */}
+                    <motion.div
+                      className="flex flex-wrap gap-2 justify-center mt-6 max-w-[400px]"
+                      style={{ y: yBadges }}
+                    >
+                      {filteredProjects[activeProjectIndex]?.technologies.map((tech) => (
+                        <span
+                          key={tech}
+                          className="px-3 py-1.5 rounded-xl text-[10px] font-black bg-gradient-to-r from-red-500/10 to-red-600/10 text-red-500 border border-red-500/25 shadow-md flex items-center gap-1.5"
+                          style={{ fontFamily: 'Nunito, sans-serif' }}
+                        >
+                          ⚡ {tech}
+                        </span>
+                      ))}
+                    </motion.div>
+
+                    {/* Terminal Status Printout */}
+                    <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl font-mono text-[9px] text-red-500 border border-red-500/20 bg-black/60 shadow-inner">
+                      <div>&gt; INITIALIZING PREVIEW_CONSOLE...</div>
+                      <div>&gt; LOADED: {filteredProjects[activeProjectIndex]?.title.toUpperCase()}</div>
+                      <div>&gt; STATUS: STABLE // RENDERED_SUCCESSFULLY</div>
+                    </div>
+
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+            </div>
+
+            {/* Scrolling Details Column (Right) */}
+            <div className="w-full lg:w-1/2 flex flex-col gap-12">
+              {filteredProjects.map((project, index) => (
+                <div
+                  key={project.id}
+                  ref={el => sectionRefs.current[index] = el}
+                  className="scroll-mt-32"
+                >
+                  <FlipCard project={project} index={index} />
+                </div>
+              ))}
+            </div>
+
+          </div>
+        ) : (
+          /* Classic Grid Layout */
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredProjects.map((project, index) => (
+              <motion.div
+                key={project.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.07, duration: 0.4 }}
+              >
+                <FlipCard project={project} index={index} />
+              </motion.div>
+            ))}
+          </div>
         )}
-        
-        {/* View All Button */}
-        <motion.div 
+
+        {filteredProjects.length === 0 && (
+          <div className="text-center py-20">
+            <FaFolderOpen style={{ color: '#FF6B6B', margin: '0 auto 16px', fontSize: '4rem', opacity: 0.3 }} />
+            <p style={{ color: '#A0A0B8' }}>No projects found for this filter</p>
+          </div>
+        )}
+
+        {/* GitHub CTA */}
+        <motion.div
           className="mt-20 flex justify-center"
-          initial={{ opacity: 0.5, y: 20 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
         >
-          <motion.a 
-            href="https://github.com/ThamemAnsu" 
+          <motion.a
+            href="https://github.com/ThamemAnsu"
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative inline-flex items-center px-10 py-5 bg-gradient-to-r from-[#1F2937] to-[#0F172A] text-white font-bold rounded-2xl border-2 border-[#374151] hover:border-[#2DD4BF] shadow-xl overflow-hidden"
-            whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(45,212,191,0.3)' }}
+            className="group inline-flex items-center gap-3 px-10 py-5 rounded-2xl font-black text-base transition-all"
+            style={{
+              background: 'rgba(255,255,255,0.05)',
+              border: '2px solid rgba(255,107,107,0.3)',
+              color: '#F8F7FF',
+              fontFamily: 'Nunito, sans-serif',
+            }}
+            whileHover={{
+              scale: 1.05,
+              borderColor: '#FF6B6B',
+              boxShadow: '0 20px 40px rgba(255,107,107,0.25)',
+              background: 'rgba(255,107,107,0.08)',
+            }}
             whileTap={{ scale: 0.95 }}
           >
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-[#2DD4BF]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
-            />
-            <FaGithub className="text-2xl mr-3 group-hover:text-[#2DD4BF] transition-colors relative z-10" />
-            <span className="relative z-10 group-hover:text-[#2DD4BF] transition-colors">View All Projects</span>
-            <motion.svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              className="h-6 w-6 ml-3 relative z-10 group-hover:text-[#2DD4BF] transition-colors" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-              animate={{ x: [0, 5, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </motion.svg>
+            {IconWrapper(FaGithub, { size: 22 })}
+            <span>View All on GitHub</span>
+            <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>→</motion.span>
           </motion.a>
         </motion.div>
       </div>
     </section>
-  );
-};
-
-interface ProjectCardProps {
-  project: Project;
-  hoveredProject: string | null;
-  setHoveredProject: React.Dispatch<React.SetStateAction<string | null>>;
-  index: number;
-}
-
-const ProjectCard: React.FC<ProjectCardProps> = ({ 
-  project,
-  hoveredProject, 
-  setHoveredProject,
-  index
-}) => {
-  const isHovered = hoveredProject === project.id;
-  const imageUrl = project.image_url || getSpacePlaceholder(index);
-  
-  return (
-    <motion.div
-      className="group relative bg-gradient-to-br from-[#1F2937] to-[#0F172A] rounded-3xl overflow-hidden border-2 border-[#374151] hover:border-[#2DD4BF]/50 transition-all duration-300 h-full flex flex-col"
-      onMouseEnter={() => setHoveredProject(project.id)}
-      onMouseLeave={() => setHoveredProject(null)}
-      whileHover={{ y: -10, boxShadow: '0 25px 50px -12px rgba(45, 212, 191, 0.25)' }}
-      transition={{ duration: 0.3 }}
-    >
-      {/* Glow effect on hover */}
-      <motion.div
-        className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        style={{
-          boxShadow: '0 0 80px rgba(45,212,191,0.3)',
-        }}
-      />
-
-      {/* Image Section - Fixed Height */}
-      <div className="relative h-56 flex-shrink-0 overflow-hidden bg-[#111827]">
-        <motion.img 
-          src={imageUrl} 
-          alt={project.title}
-          className="w-full h-full object-cover"
-          animate={{ scale: isHovered ? 1.1 : 1 }}
-          transition={{ duration: 0.4 }}
-        />
-        
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/50 to-transparent"></div>
-        
-        {/* Action Buttons Overlay */}
-        <motion.div 
-          className="absolute inset-0 flex items-center justify-center gap-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isHovered ? 1 : 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          {project.github_url && (
-            <motion.a 
-              href={project.github_url} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#1F2937] to-[#0F172A] flex items-center justify-center text-white hover:text-[#2DD4BF] border-2 border-[#374151] hover:border-[#2DD4BF] shadow-2xl backdrop-blur-xl"
-              whileHover={{ scale: 1.15, rotate: 5 }}
-              whileTap={{ scale: 0.9 }}
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: isHovered ? 0 : 30, opacity: isHovered ? 1 : 0 }}
-              transition={{ duration: 0.3, delay: 0.05 }}
-            >
-              {IconWrapper(FaGithub, { size: 22 })}
-            </motion.a>
-          )}
-          {project.live_url && (
-            <motion.a 
-              href={project.live_url} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#2DD4BF] to-[#14b8a6] flex items-center justify-center text-white shadow-2xl shadow-[#2DD4BF]/50"
-              whileHover={{ scale: 1.15, rotate: -5 }}
-              whileTap={{ scale: 0.9 }}
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: isHovered ? 0 : 30, opacity: isHovered ? 1 : 0 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-            >
-              {IconWrapper(FaExternalLinkAlt, { size: 20 })}
-            </motion.a>
-          )}
-        </motion.div>
-
-        {/* Featured Badge */}
-        {project.featured && (
-          <motion.div
-            className="absolute top-4 right-4 px-4 py-2 bg-gradient-to-r from-[#F59E0B] to-[#EF4444] rounded-xl flex items-center gap-2 shadow-xl"
-            initial={{ scale: 0, rotate: -45 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ type: "spring", delay: 0.2 }}
-          >
-            <FaStar className="text-white text-sm" />
-            <span className="text-white text-xs font-bold">Featured</span>
-          </motion.div>
-        )}
-      </div>
-      
-      {/* Content Section - Flexible Height with Fixed Structure */}
-      <div className="p-6 relative z-10 flex flex-col flex-1">
-        <div className="flex items-start justify-between mb-3">
-          <h3 className="text-xl font-black text-white group-hover:text-[#2DD4BF] transition-colors duration-300 flex-1 line-clamp-2 min-h-[3.5rem]">
-            {project.title}
-          </h3>
-          <FaCode className="text-[#2DD4BF] text-xl flex-shrink-0 ml-2" />
-        </div>
-        
-        <p className="text-[#94A3B8] mb-6 text-sm leading-relaxed line-clamp-3 min-h-[4.5rem]">
-          {project.description}
-        </p>
-        
-        {/* Technologies - Fixed at Bottom */}
-        <div className="flex flex-wrap gap-2 mt-auto">
-          {project.technologies.slice(0, 4).map((tech, index) => (
-            <motion.span 
-              key={tech} 
-              className="text-xs px-3 py-2 rounded-lg bg-gradient-to-br from-[#374151] to-[#1F2937] text-[#2DD4BF] font-mono font-bold border border-[#4B5563] hover:border-[#2DD4BF]/50 transition-all duration-200"
-              whileHover={{ scale: 1.05, y: -2 }}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.05 }}
-            >
-              {tech}
-            </motion.span>
-          ))}
-          {project.technologies.length > 4 && (
-            <span className="text-xs px-3 py-2 rounded-lg bg-gradient-to-br from-[#374151] to-[#1F2937] text-[#94A3B8] font-mono font-bold border border-[#4B5563]">
-              +{project.technologies.length - 4}
-            </span>
-          )}
-        </div>
-      </div>
-      
-      {/* Bottom Accent Line */}
-      <motion.div 
-        className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#2DD4BF] to-transparent"
-        initial={{ opacity: 0, scaleX: 0.5 }}
-        animate={{ opacity: isHovered ? 1 : 0, scaleX: isHovered ? 1 : 0.5 }}
-        transition={{ duration: 0.3 }}
-      />
-
-      {/* Corner Decoration */}
-      <div className="absolute top-0 right-0 w-32 h-32 opacity-10 overflow-hidden rounded-tl-3xl">
-        <motion.div
-          className="w-full h-full bg-gradient-to-br from-[#2DD4BF] to-transparent"
-          animate={{ 
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.2, 0.1]
-          }}
-          transition={{ duration: 4, repeat: Infinity }}
-        />
-      </div>
-    </motion.div>
   );
 };
 

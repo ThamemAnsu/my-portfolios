@@ -8,8 +8,8 @@ import {
 import { format, formatDistanceToNow } from 'date-fns';
 
 // Initialize Supabase client
-const supabaseUrl = 'https://tscpiiiregsqkvztjxba.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzY3BpaWlyZWdzcWt2enRqeGJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAyMDk3NzcsImV4cCI6MjA3NTc4NTc3N30._4oCoWFMwwBOgh5_OtZM4i-fg-XYvYaw4frKQN77zIY';
+const supabaseUrl = 'https://redekfpzbqdlhhcsnxpi.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZGVrZnB6YnFkbGhoY3NueHBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4MzIxMjgsImV4cCI6MjA5ODQwODEyOH0._txyfFm7GE2fL9QgcgnuBJoPb2S3zu_1nixDed69kac';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 interface Message {
@@ -172,7 +172,7 @@ const MessagesManagement: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-white flex items-center">
+        <h1 className="text-3xl font-bold text-gray-800 flex items-center">
           <FaEnvelope className="mr-3 text-secondary" />
           Messages
           {unreadCount > 0 && (
@@ -210,15 +210,15 @@ const MessagesManagement: React.FC = () => {
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Messages List */}
         <div className="w-full lg:w-2/5">
-          <div className="bg-dark-card rounded-xl border border-gray-700 shadow-card overflow-hidden">
-            <div className="p-4 bg-dark-lighter border-b border-gray-700 flex justify-between items-center">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <div className="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
               <div className="flex space-x-2">
                 <button
                   onClick={() => setFilter('all')}
                   className={`px-3 py-1.5 rounded-lg text-sm flex items-center ${
                     filter === 'all'
-                      ? 'bg-gray-700 text-white'
-                      : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                      ? 'bg-red-100 text-red-600'
+                      : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100'
                   } transition-colors`}
                 >
                   <FaInbox className="mr-1.5" />
@@ -229,8 +229,8 @@ const MessagesManagement: React.FC = () => {
                   onClick={() => setFilter('unread')}
                   className={`px-3 py-1.5 rounded-lg text-sm flex items-center ${
                     filter === 'unread'
-                      ? 'bg-gray-700 text-white'
-                      : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                      ? 'bg-red-100 text-red-600'
+                      : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100'
                   } transition-colors`}
                 >
                   <FaExclamationCircle className="mr-1.5" />
@@ -241,8 +241,8 @@ const MessagesManagement: React.FC = () => {
                   onClick={() => setFilter('read')}
                   className={`px-3 py-1.5 rounded-lg text-sm flex items-center ${
                     filter === 'read'
-                      ? 'bg-gray-700 text-white'
-                      : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                      ? 'bg-red-100 text-red-600'
+                      : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100'
                   } transition-colors`}
                 >
                   <FaArchive className="mr-1.5" />
@@ -263,7 +263,7 @@ const MessagesManagement: React.FC = () => {
             ) : messages.length === 0 ? (
               <div className="p-6 text-center">
                 <FaEnvelope className="mx-auto text-4xl text-gray-500 mb-3" />
-                <h3 className="text-xl font-bold text-white mb-1">No messages</h3>
+                <h3 className="text-xl font-bold text-gray-800 mb-1">No messages</h3>
                 <p className="text-gray-400">
                   {filter === 'all' 
                     ? 'You have no messages yet.' 
@@ -282,12 +282,12 @@ const MessagesManagement: React.FC = () => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
                     onClick={() => viewMessage(message)}
-                    className={`p-4 hover:bg-dark-lighter cursor-pointer transition-colors ${
-                      selectedMessage?.id === message.id ? 'bg-dark-lighter' : ''
+                    className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
+                      selectedMessage?.id === message.id ? 'bg-red-50 border-l-2 border-red-400' : ''
                     } ${!message.read ? 'border-l-4 border-secondary' : ''}`}
                   >
                     <div className="flex justify-between items-start mb-1">
-                      <h3 className={`font-medium text-base ${!message.read ? 'text-white' : 'text-gray-300'}`}>
+                      <h3 className={`font-medium text-base ${!message.read ? 'text-gray-900 font-semibold' : 'text-gray-600'}`}>
                         {message.name}
                       </h3>
                       <span className="text-xs text-gray-400">
@@ -297,7 +297,7 @@ const MessagesManagement: React.FC = () => {
                     
                     <p className="text-gray-400 text-sm mb-1">{message.email}</p>
                     
-                    <p className={`${!message.read ? 'text-white font-medium' : 'text-gray-300'} line-clamp-1`}>
+                    <p className={`${!message.read ? 'text-gray-700 font-medium' : 'text-gray-500'} line-clamp-1`}>
                       {message.subject}
                     </p>
                     
@@ -313,17 +313,17 @@ const MessagesManagement: React.FC = () => {
         
         {/* Message Detail */}
         <div className="w-full lg:w-3/5">
-          <div className="bg-dark-card rounded-xl border border-gray-700 shadow-card h-full">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm h-full">
             {selectedMessage ? (
               <div className="flex flex-col h-full">
-                <div className="p-5 bg-dark-lighter border-b border-gray-700 flex justify-between items-center">
-                  <h3 className="text-xl font-medium text-white">{selectedMessage.subject}</h3>
+                <div className="p-5 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+                  <h3 className="text-xl font-medium text-gray-800">{selectedMessage.subject}</h3>
                   
                   <div className="flex space-x-2">
                     {!selectedMessage.read && (
                       <button
                         onClick={() => markAsRead(selectedMessage.id)}
-                        className="p-2 text-gray-400 hover:text-secondary rounded-full hover:bg-dark-lightest transition-colors"
+                        className="p-2 text-gray-400 hover:text-secondary rounded-full hover:bg-red-50 transition-colors"
                         title="Mark as Read"
                       >
                         <FaCheck />
@@ -332,7 +332,7 @@ const MessagesManagement: React.FC = () => {
                     
                     <button
                       onClick={() => deleteMessage(selectedMessage.id)}
-                      className="p-2 text-gray-400 hover:text-red-500 rounded-full hover:bg-dark-lightest transition-colors"
+                      className="p-2 text-gray-400 hover:text-red-500 rounded-full hover:bg-red-50 transition-colors"
                       title="Delete Message"
                     >
                       <FaTrash />
@@ -340,13 +340,13 @@ const MessagesManagement: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="p-5 border-b border-gray-700 bg-dark-lighter/30">
+                <div className="p-5 border-b border-gray-200 bg-gray-50">
                   <div className="flex items-center mb-1">
-                    <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-secondary text-lg mr-3">
+                    <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-secondary text-lg mr-3">
                       {selectedMessage.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <h4 className="text-white font-medium">{selectedMessage.name}</h4>
+                      <h4 className="text-gray-800 font-medium">{selectedMessage.name}</h4>
                       <p className="text-gray-400 text-sm">{selectedMessage.email}</p>
                     </div>
                   </div>
@@ -367,12 +367,12 @@ const MessagesManagement: React.FC = () => {
                 </div>
                 
                 <div className="p-6 flex-grow overflow-y-auto">
-                  <div className="whitespace-pre-wrap text-white">
+                  <div className="whitespace-pre-wrap text-gray-700">
                     {selectedMessage.message}
                   </div>
                 </div>
                 
-                <div className="p-4 bg-dark-lighter border-t border-gray-700 mt-auto">
+                <div className="p-4 bg-gray-50 border-t border-gray-200 mt-auto">
                   <div className="flex items-center text-sm text-gray-400">
                     <FaUser className="mr-2" />
                     <span>From: {selectedMessage.name} ({selectedMessage.email})</span>
@@ -384,7 +384,7 @@ const MessagesManagement: React.FC = () => {
                 <div className="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center mb-4">
                   <FaEnvelope className="text-2xl text-gray-500" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">Select a message</h3>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">Select a message</h3>
                 <p className="text-gray-400">
                   {messages.length > 0 
                     ? 'Click on a message to view its contents' 
