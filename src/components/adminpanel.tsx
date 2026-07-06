@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef,Suspense } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FaHome, FaUser, FaCode, FaBriefcase, FaFolder, 
-  FaEnvelope, FaSignOutAlt, FaPlus, FaBell, FaSun, 
-  FaMoon, FaCog, FaTachometerAlt, FaChartLine,
-  FaAngleRight, FaAngleLeft, FaBars, FaBook, FaLock,
+  FaEnvelope, FaSignOutAlt, FaPlus, FaBell, 
+  FaCog, FaTachometerAlt, 
+  FaAngleRight, FaAngleLeft, FaBook, FaLock,
   FaPlusCircle
 } from 'react-icons/fa';
 import './AdminPanel.css';
@@ -17,7 +17,6 @@ import ProfileManagement from './ProfileManagement';
 import MessagesManagement from './MessagesManagement';
 import Resume from './Resume';
 import Settings from './Settings';
-import { GenerativeArtScene } from './loginUI';
 import { Star } from 'lucide-react';
 
 
@@ -625,8 +624,8 @@ const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) 
         transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
         className="fixed inset-y-0 left-0 z-40 overflow-hidden flex flex-col"
         style={{
-          background: 'linear-gradient(180deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%)',
-          boxShadow: '4px 0 24px rgba(0,0,0,0.15)'
+          background: 'linear-gradient(180deg, #0A0A0A 0%, #111111 50%, #1A1A1A 100%)',
+          boxShadow: '4px 0 24px rgba(0,0,0,0.4)'
         }}
       >
         {/* Sidebar decorative blob */}
@@ -1100,7 +1099,7 @@ const Dashboard: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="relative overflow-hidden rounded-2xl p-8 mb-7 text-white"
-        style={{ background: 'linear-gradient(135deg, #1A1A2E 0%, #16213E 40%, #0F3460 100%)', boxShadow: '0 8px 32px rgba(26,26,46,0.3)' }}
+        style={{ background: 'linear-gradient(135deg, #111111 0%, #1A1A1A 40%, #222222 100%)', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}
       >
         {/* Background decoration */}
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 pointer-events-none" style={{ background: 'radial-gradient(circle, #EF4444, transparent)', transform: 'translate(30%, -30%)' }} />
@@ -1138,7 +1137,7 @@ const Dashboard: React.FC = () => {
       {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-7">
         <StatCard title="Projects" count={stats.projects} icon={FaFolder}
-          color="#3B82F6, #2563EB" bg="linear-gradient(135deg, #3B82F6, #1D4ED8)" delay={0.1} link="/admin/projects" />
+          color="#EF4444, #DC2626" bg="linear-gradient(135deg, #EF4444, #B91C1C)" delay={0.1} link="/admin/projects" />
         <StatCard title="Skills" count={stats.skills} icon={FaCode}
           color="#10B981, #059669" bg="linear-gradient(135deg, #10B981, #047857)" delay={0.2} link="/admin/skills" />
         <StatCard title="Experience" count={stats.experience} icon={FaBriefcase}
@@ -1207,14 +1206,14 @@ const Dashboard: React.FC = () => {
           style={{ background: 'white', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid rgba(0,0,0,0.06)' }}
         >
           <div className="flex items-center space-x-2 px-6 py-4 border-b" style={{ borderColor: 'rgba(0,0,0,0.06)' }}>
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #8B5CF6, #6D28D9)' }}>
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #EF4444, #DC2626)' }}>
               <FaPlus size={13} className="text-white" />
             </div>
             <h3 className="font-bold text-gray-800">Quick Actions</h3>
           </div>
           <div className="p-4 space-y-2.5">
             {[
-              { icon: FaFolder, label: 'New Project', sub: 'Add to portfolio', path: '/admin/projects/new', grad: 'linear-gradient(135deg, #3B82F6, #1D4ED8)' },
+              { icon: FaFolder, label: 'New Project', sub: 'Add to portfolio', path: '/admin/projects/new', grad: 'linear-gradient(135deg, #EF4444, #B91C1C)' },
               { icon: FaCode, label: 'New Skill', sub: 'Update expertise', path: '/admin/skills/new', grad: 'linear-gradient(135deg, #10B981, #047857)' },
               { icon: FaBriefcase, label: 'New Experience', sub: 'Work history', path: '/admin/experience/new', grad: 'linear-gradient(135deg, #8B5CF6, #5B21B6)' },
               { icon: FaHome, label: 'View Portfolio', sub: 'Live preview', path: '/', external: true, grad: 'linear-gradient(135deg, #F59E0B, #B45309)' },

@@ -79,6 +79,7 @@ const ProjectsManagement: React.FC = () => {
   
   useEffect(() => {
     initializeComponent();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   const initializeComponent = async () => {
@@ -505,6 +506,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onClose }) => {
     if (projectId) {
       fetchProject();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
   
   const fetchProject = async () => {

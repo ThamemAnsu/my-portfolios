@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { 
   FaFileAlt, FaDownload, FaSync, FaEye, 
   FaPlus, FaCheck, FaBriefcase, FaCode, 
-  FaFolder, FaUser, FaCog,FaStar,FaHistory,FaTrash
+  FaFolder, FaUser, FaStar,FaHistory,FaTrash
 } from 'react-icons/fa';
 import { createClient } from '@supabase/supabase-js';
 
@@ -44,6 +44,7 @@ const ResumeGenerator = () => {
   // Fetch all data on component mount
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   // Fetch data from Supabase
@@ -2092,6 +2093,8 @@ const ResumeGenerator = () => {
       }
     }
   `;
+    default:
+      return '';
   }
 };
   

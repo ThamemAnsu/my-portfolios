@@ -31,34 +31,34 @@ const MessagesManagement: React.FC = () => {
   const [filter, setFilter] = useState<'all' | 'read' | 'unread'>('all');
   
   useEffect(() => {
+    const fetchMessages = async () => {
+      setLoading(true);
+      try {
+        let query = supabase
+          .from('messages')
+          .select('*')
+          .order('created_at', { ascending: false });
+          
+        // Apply filter
+        if (filter === 'read') {
+          query = query.eq('read', true);
+        } else if (filter === 'unread') {
+          query = query.eq('read', false);
+        }
+        
+        const { data, error } = await query;
+          
+        if (error) throw error;
+        setMessages(data || []);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchMessages();
   }, [filter]);
-  
-  const fetchMessages = async () => {
-    setLoading(true);
-    try {
-      let query = supabase
-        .from('messages')
-        .select('*')
-        .order('created_at', { ascending: false });
-        
-      // Apply filter
-      if (filter === 'read') {
-        query = query.eq('read', true);
-      } else if (filter === 'unread') {
-        query = query.eq('read', false);
-      }
-      
-      const { data, error } = await query;
-        
-      if (error) throw error;
-      setMessages(data || []);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
   
   const markAsRead = async (id: string) => {
     try {
