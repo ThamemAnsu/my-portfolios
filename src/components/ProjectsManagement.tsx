@@ -8,8 +8,8 @@ import {
 import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase client
-const supabaseUrl = 'https://tscpiiiregsqkvztjxba.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzY3BpaWlyZWdzcWt2enRqeGJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAyMDk3NzcsImV4cCI6MjA3NTc4NTc3N30._4oCoWFMwwBOgh5_OtZM4i-fg-XYvYaw4frKQN77zIY';
+const supabaseUrl = 'https://redekfpzbqdlhhcsnxpi.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZGVrZnB6YnFkbGhoY3NueHBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4MzIxMjgsImV4cCI6MjA5ODQwODEyOH0._txyfFm7GE2fL9QgcgnuBJoPb2S3zu_1nixDed69kac';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 interface Project {
@@ -79,6 +79,7 @@ const ProjectsManagement: React.FC = () => {
   
   useEffect(() => {
     initializeComponent();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   const initializeComponent = async () => {
@@ -214,7 +215,7 @@ const ProjectsManagement: React.FC = () => {
               <FaDatabase className="text-red-400 text-3xl" />
             </div>
             <div className="flex-1">
-              <h2 className="text-2xl font-bold text-white mb-2 flex items-center">
+              <h2 className="text-2xl font-bold text-gray-800 mb-2 flex items-center">
                 <FaExclamationTriangle className="mr-2 text-red-400" />
                 Database Schema Issue Detected
               </h2>
@@ -249,7 +250,7 @@ const ProjectsManagement: React.FC = () => {
               <div className="flex gap-3">
                 <button
                   onClick={() => window.location.reload()}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                  className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
                 >
                   Refresh After Fix
                 </button>
@@ -257,7 +258,7 @@ const ProjectsManagement: React.FC = () => {
                   href="https://supabase.com/dashboard/project/_/editor"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors inline-flex items-center"
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors inline-flex items-center border border-gray-200"
                 >
                   Open Supabase Dashboard
                   <FaExternalLinkAlt className="ml-2 text-sm" />
@@ -287,7 +288,7 @@ const ProjectsManagement: React.FC = () => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleAddNew}
-          className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl flex items-center shadow-lg shadow-blue-500/30 transition-all font-medium"
+          className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl flex items-center shadow-md shadow-red-500/20 transition-all font-medium"
         >
           <FaPlus className="mr-2" /> Add New Project
         </motion.button>
@@ -312,8 +313,8 @@ const ProjectsManagement: React.FC = () => {
             onClick={() => setFilterFeatured(filter.key as any)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               filterFeatured === filter.key
-                ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30'
-                : 'bg-[#1a2942] text-gray-300 hover:bg-[#1e2f47]'
+                ? 'bg-red-500 text-white shadow-md shadow-red-500/20'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
             {filter.label}
@@ -330,14 +331,14 @@ const ProjectsManagement: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-gradient-to-br from-[#1a2942] to-[#0e1a2e] rounded-2xl p-12 text-center border border-[#1C2636]"
+          className="bg-white rounded-2xl p-12 text-center border border-gray-200 shadow-sm"
         >
           <FaFolder className="mx-auto text-6xl text-gray-600 mb-4" />
-          <h3 className="text-xl font-bold text-white mb-2">No Projects Found</h3>
+          <h3 className="text-xl font-bold text-gray-800 mb-2">No Projects Found</h3>
           <p className="text-gray-400 mb-6">Start building your portfolio by adding your first project</p>
           <button
             onClick={handleAddNew}
-            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl inline-flex items-center shadow-lg shadow-blue-500/30"
+            className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl inline-flex items-center shadow-md shadow-red-500/20"
           >
             <FaPlus className="mr-2" /> Add Your First Project
           </button>
@@ -350,9 +351,9 @@ const ProjectsManagement: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="bg-gradient-to-br from-[#1a2942] to-[#0e1a2e] rounded-xl border border-[#1C2636] p-5 flex flex-col md:flex-row gap-4 hover:border-blue-500/30 transition-all group"
+              className="bg-white rounded-xl border border-gray-200 p-5 flex flex-col md:flex-row gap-4 hover:border-red-300 hover:shadow-md transition-all group"
             >
-              <div className="md:w-56 h-36 rounded-lg bg-[#0e1a2e] overflow-hidden flex-shrink-0 border border-[#1C2636] group-hover:border-blue-500/30 transition-all">
+              <div className="md:w-56 h-36 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-200 group-hover:border-red-300 transition-all">
                 {project.image_url ? (
                   <img 
                     src={project.image_url} 
@@ -369,7 +370,7 @@ const ProjectsManagement: React.FC = () => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
-                    <h3 className="font-bold text-white text-xl flex items-center gap-2 mb-1">
+                    <h3 className="font-bold text-gray-800 text-xl flex items-center gap-2 mb-1">
                       {project.title}
                       {project.featured && (
                         <span className="text-xs bg-gradient-to-r from-yellow-500/20 to-orange-500/20 text-yellow-300 px-2 py-1 rounded-lg border border-yellow-500/30">
@@ -424,7 +425,7 @@ const ProjectsManagement: React.FC = () => {
                   className={`p-2.5 rounded-lg transition-all ${
                     project.featured 
                       ? 'bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 border border-yellow-500/30' 
-                      : 'bg-[#0e1a2e] text-gray-400 hover:text-yellow-300 hover:bg-yellow-500/10 border border-[#1C2636]'
+                      : 'bg-gray-100 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 border border-gray-200'
                   }`}
                   title={project.featured ? 'Remove from featured' : 'Mark as featured'}
                 >
@@ -434,7 +435,7 @@ const ProjectsManagement: React.FC = () => {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => moveProject(project.id, 'up')}
-                  className="p-2.5 rounded-lg bg-[#0e1a2e] text-gray-400 hover:text-white hover:bg-blue-500/20 transition-all border border-[#1C2636]"
+                  className="p-2.5 rounded-lg bg-gray-100 text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all border border-gray-200"
                   title="Move Up"
                 >
                   <FaArrowUp />
@@ -443,7 +444,7 @@ const ProjectsManagement: React.FC = () => {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => moveProject(project.id, 'down')}
-                  className="p-2.5 rounded-lg bg-[#0e1a2e] text-gray-400 hover:text-white hover:bg-blue-500/20 transition-all border border-[#1C2636]"
+                  className="p-2.5 rounded-lg bg-gray-100 text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all border border-gray-200"
                   title="Move Down"
                 >
                   <FaArrowDown />
@@ -452,7 +453,7 @@ const ProjectsManagement: React.FC = () => {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => handleEdit(project.id)}
-                  className="p-2.5 rounded-lg bg-[#0e1a2e] text-gray-400 hover:text-white hover:bg-green-500/20 transition-all border border-[#1C2636]"
+                  className="p-2.5 rounded-lg bg-gray-100 text-gray-500 hover:text-green-600 hover:bg-green-50 transition-all border border-gray-200"
                   title="Edit"
                 >
                   <FaEdit />
@@ -461,7 +462,7 @@ const ProjectsManagement: React.FC = () => {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => deleteProject(project.id)}
-                  className="p-2.5 rounded-lg bg-[#0e1a2e] text-gray-400 hover:text-red-400 hover:bg-red-500/20 transition-all border border-[#1C2636]"
+                  className="p-2.5 rounded-lg bg-gray-100 text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all border border-gray-200"
                   title="Delete"
                 >
                   <FaTrash />
@@ -505,6 +506,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onClose }) => {
     if (projectId) {
       fetchProject();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
   
   const fetchProject = async () => {
@@ -688,12 +690,12 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onClose }) => {
         </motion.div>
       )}
       
-      <form onSubmit={handleSubmit} className="bg-gradient-to-br from-[#1a2942] to-[#0e1a2e] rounded-2xl border border-[#1C2636] p-6 space-y-6">
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-6">
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-3">Project Image</label>
           <div className="flex flex-col md:flex-row gap-6">
             <div className="md:w-1/3">
-              <div className="w-full aspect-[4/3] rounded-xl bg-[#0e1a2e] border-2 border-dashed border-[#1C2636] overflow-hidden flex items-center justify-center group hover:border-blue-500/50 transition-all">
+              <div className="w-full aspect-[4/3] rounded-xl bg-gray-50 border-2 border-dashed border-gray-300 overflow-hidden flex items-center justify-center group hover:border-red-400 transition-all">
                 {imagePreview ? (
                   <img 
                     src={imagePreview} 
@@ -719,7 +721,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onClose }) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => fileInputRef.current?.click()}
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl flex items-center transition-all shadow-lg shadow-blue-500/20 w-fit"
+                className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl flex items-center transition-all shadow-md shadow-red-500/20 w-fit"
               >
                 <FaUpload className="mr-2" />
                 {imagePreview ? 'Change Image' : 'Upload Image'}
@@ -743,7 +745,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onClose }) => {
               value={formData.title}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 bg-[#0e1a2e] border border-[#1C2636] rounded-xl text-white focus:outline-none focus:border-blue-500 transition-all"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all"
               placeholder="My Awesome Project"
             />
           </div>
@@ -759,7 +761,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onClose }) => {
               onChange={handleChange}
               required
               rows={2}
-              className="w-full px-4 py-3 bg-[#0e1a2e] border border-[#1C2636] rounded-xl text-white focus:outline-none focus:border-blue-500 transition-all resize-none"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all resize-none"
               placeholder="A brief description (1-2 sentences)"
             ></textarea>
           </div>
@@ -774,7 +776,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onClose }) => {
               value={formData.long_description || ''}
               onChange={handleChange}
               rows={4}
-              className="w-full px-4 py-3 bg-[#0e1a2e] border border-[#1C2636] rounded-xl text-white focus:outline-none focus:border-blue-500 transition-all resize-none"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all resize-none"
               placeholder="Detailed project description, features, challenges..."
             ></textarea>
           </div>
@@ -789,7 +791,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onClose }) => {
               name="live_url"
               value={formData.live_url || ''}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-[#0e1a2e] border border-[#1C2636] rounded-xl text-white focus:outline-none focus:border-blue-500 transition-all"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all"
               placeholder="https://demo.example.com"
             />
           </div>
@@ -804,7 +806,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onClose }) => {
               name="github_url"
               value={formData.github_url || ''}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-[#0e1a2e] border border-[#1C2636] rounded-xl text-white focus:outline-none focus:border-blue-500 transition-all"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all"
               placeholder="https://github.com/username/repo"
             />
           </div>
@@ -818,7 +820,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onClose }) => {
               value={techInput}
               onChange={(e) => setTechInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTechnology())}
-              className="flex-1 px-4 py-3 bg-[#0e1a2e] border border-[#1C2636] rounded-xl text-white focus:outline-none focus:border-blue-500 transition-all"
+              className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all"
               placeholder="e.g., React, TypeScript, Node.js"
             />
             <motion.button
@@ -826,7 +828,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onClose }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={addTechnology}
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all"
+              className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-all"
             >
               Add
             </motion.button>
@@ -853,14 +855,14 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onClose }) => {
           </div>
         </div>
         
-        <div className="bg-[#0e1a2e] border border-[#1C2636] rounded-xl p-4">
+        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
           <label className="flex items-center cursor-pointer">
             <input
               type="checkbox"
               name="featured"
               checked={formData.featured}
               onChange={handleChange}
-              className="w-5 h-5 text-blue-600 bg-[#0e1a2e] border-[#1C2636] rounded focus:ring-blue-500 focus:ring-offset-0"
+              className="w-5 h-5 text-red-500 bg-gray-50 border-gray-300 rounded focus:ring-red-400 focus:ring-offset-0"
             />
             <span className="ml-3 text-gray-300 font-medium">⭐ Mark as Featured Project</span>
           </label>
@@ -875,7 +877,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onClose }) => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onClose}
-            className="px-6 py-3 bg-[#0e1a2e] hover:bg-[#1a2435] text-white rounded-xl transition-all border border-[#1C2636]"
+            className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition-all border border-gray-200"
           >
             Cancel
           </motion.button>
@@ -884,7 +886,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onClose }) => {
             disabled={saving}
             whileHover={{ scale: saving ? 1 : 1.05 }}
             whileTap={{ scale: saving ? 1 : 0.95 }}
-            className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl transition-all flex items-center shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-all flex items-center shadow-md shadow-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? (
               <>

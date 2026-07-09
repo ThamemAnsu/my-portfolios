@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { 
   FaFileAlt, FaDownload, FaSync, FaEye, 
   FaPlus, FaCheck, FaBriefcase, FaCode, 
-  FaFolder, FaUser, FaCog,FaStar,FaHistory,FaTrash
+  FaFolder, FaUser, FaStar,FaHistory,FaTrash
 } from 'react-icons/fa';
 import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase client
-const supabaseUrl = 'https://tscpiiiregsqkvztjxba.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzY3BpaWlyZWdzcWt2enRqeGJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAyMDk3NzcsImV4cCI6MjA3NTc4NTc3N30._4oCoWFMwwBOgh5_OtZM4i-fg-XYvYaw4frKQN77zIY';
+const supabaseUrl = 'https://redekfpzbqdlhhcsnxpi.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZGVrZnB6YnFkbGhoY3NueHBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4MzIxMjgsImV4cCI6MjA5ODQwODEyOH0._txyfFm7GE2fL9QgcgnuBJoPb2S3zu_1nixDed69kac';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Resume templates
@@ -44,6 +44,7 @@ const ResumeGenerator = () => {
   // Fetch all data on component mount
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   // Fetch data from Supabase
@@ -2092,6 +2093,8 @@ const ResumeGenerator = () => {
       }
     }
   `;
+    default:
+      return '';
   }
 };
   
@@ -2183,7 +2186,7 @@ const ResumeGenerator = () => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="flex items-center justify-between bg-dark-card p-6 rounded-xl border border-dark-lightest"
+        className="flex items-center justify-between bg-white p-6 rounded-xl border border-gray-200 shadow-sm"
       >
         <div>
           <h1 className="text-2xl font-bold flex items-center bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
@@ -2201,8 +2204,8 @@ const ResumeGenerator = () => {
             disabled={generating || loading || !profile}
             className={`px-4 py-2 rounded-lg flex items-center ${
               generating || loading || !profile 
-                ? 'bg-gray-700 cursor-not-allowed text-gray-500' 
-                : 'bg-blue-600 hover:bg-blue-700 text-white'
+                ? 'bg-gray-200 cursor-not-allowed text-gray-400' 
+                : 'bg-red-500 hover:bg-red-600 text-white'
             }`}
           >
             {generating ? (
@@ -2223,7 +2226,7 @@ const ResumeGenerator = () => {
             whileTap={{ scale: 0.95 }}
             onClick={fetchData}
             disabled={loading}
-            className="p-2 rounded-lg bg-dark-lightest text-gray-400 hover:text-white transition-colors"
+            className="p-2 rounded-lg bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
             title="Refresh Data"
           >
             <FaSync className={loading ? 'animate-spin' : ''} />
@@ -2262,7 +2265,7 @@ const ResumeGenerator = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-dark-card rounded-xl border border-dark-lightest p-6 h-full"
+            className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 h-full"
           >
             <h2 className="text-xl font-bold mb-6 flex items-center">
               <FaHistory className="mr-2 text-blue-500" />
@@ -2274,7 +2277,7 @@ const ResumeGenerator = () => {
                 <div className="spinner h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
               </div>
             ) : resumeList.length === 0 ? (
-              <div className="text-center py-10 bg-dark-lighter rounded-lg">
+              <div className="text-center py-10 bg-gray-50 rounded-lg">
                 <FaFileAlt className="mx-auto text-4xl text-gray-600 mb-4" />
                 <h3 className="text-gray-300 font-medium mb-2">No Resumes Yet</h3>
                 <p className="text-gray-500 text-sm px-6">
@@ -2290,7 +2293,7 @@ const ResumeGenerator = () => {
                     className={`p-4 rounded-lg border transition-all cursor-pointer ${
                       selectedResume?.id === resume.id
                         ? 'bg-blue-900/30 border-blue-500/50'
-                        : 'bg-dark-lighter border-dark-lightest hover:border-gray-600'
+                        : 'bg-gray-50 border-gray-200 hover:border-gray-300'
                     }`}
                     onClick={() => setSelectedResume(resume)}
                   >
@@ -2356,7 +2359,7 @@ const ResumeGenerator = () => {
                   <select
                     value={template}
                     onChange={(e) => setTemplate(e.target.value)}
-                    className="w-full bg-dark-lighter border border-dark-lightest rounded-lg p-2 text-white"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 text-gray-800"
                   >
                     <option value={TEMPLATES.MODERN}>Modern</option>
                     <option value={TEMPLATES.CLASSIC}>Classic</option>
@@ -2412,7 +2415,7 @@ const ResumeGenerator = () => {
                       max="20"
                       value={skillsCount}
                       onChange={(e) => setSkillsCount(parseInt(e.target.value) || 10)}
-                      className="w-full bg-dark-lighter border border-dark-lightest rounded-lg p-2 text-white"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 text-gray-800"
                     />
                   </div>
                   
@@ -2424,7 +2427,7 @@ const ResumeGenerator = () => {
                       max="10"
                       value={projectsCount}
                       onChange={(e) => setProjectsCount(parseInt(e.target.value) || 3)}
-                      className="w-full bg-dark-lighter border border-dark-lightest rounded-lg p-2 text-white"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 text-gray-800"
                     />
                   </div>
                   
@@ -2436,7 +2439,7 @@ const ResumeGenerator = () => {
                       max="10"
                       value={experienceCount}
                       onChange={(e) => setExperienceCount(parseInt(e.target.value) || 4)}
-                      className="w-full bg-dark-lighter border border-dark-lightest rounded-lg p-2 text-white"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 text-gray-800"
                     />
                   </div>
                 </div>
@@ -2450,7 +2453,7 @@ const ResumeGenerator = () => {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="lg:col-span-2 bg-dark-card rounded-xl border border-dark-lightest p-6"
+          className="lg:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6"
         >
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold flex items-center">
@@ -2464,7 +2467,7 @@ const ResumeGenerator = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={downloadResume}
-                  className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center text-sm"
+                  className="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg flex items-center text-sm"
                 >
                   <FaDownload className="mr-2" />
                   <span>Download</span>
@@ -2474,7 +2477,7 @@ const ResumeGenerator = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={previewResume}
-                  className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center text-sm"
+                  className="px-3 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg flex items-center text-sm"
                 >
                   <FaEye className="mr-2" />
                   <span>Preview</span>
@@ -2518,50 +2521,50 @@ const ResumeGenerator = () => {
         transition={{ delay: 0.3 }}
         className="grid grid-cols-1 md:grid-cols-4 gap-4"
       >
-        <div className="bg-dark-card rounded-lg border border-dark-lightest p-4">
+        <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
           <div className="flex items-center">
             <div className="p-3 rounded-lg bg-blue-500/20 text-blue-400 mr-3">
               <FaCode />
             </div>
             <div>
               <p className="text-gray-400 text-xs">Skills</p>
-              <p className="text-white text-xl font-semibold">{skills.length}</p>
+              <p className="text-gray-800 text-xl font-semibold">{skills.length}</p>
             </div>
           </div>
         </div>
         
-        <div className="bg-dark-card rounded-lg border border-dark-lightest p-4">
+        <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
           <div className="flex items-center">
             <div className="p-3 rounded-lg bg-green-500/20 text-green-400 mr-3">
               <FaFolder />
             </div>
             <div>
               <p className="text-gray-400 text-xs">Projects</p>
-              <p className="text-white text-xl font-semibold">{projects.length}</p>
+              <p className="text-gray-800 text-xl font-semibold">{projects.length}</p>
             </div>
           </div>
         </div>
         
-        <div className="bg-dark-card rounded-lg border border-dark-lightest p-4">
+        <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
           <div className="flex items-center">
             <div className="p-3 rounded-lg bg-purple-500/20 text-purple-400 mr-3">
               <FaBriefcase />
             </div>
             <div>
               <p className="text-gray-400 text-xs">Experiences</p>
-              <p className="text-white text-xl font-semibold">{experiences.length}</p>
+              <p className="text-gray-800 text-xl font-semibold">{experiences.length}</p>
             </div>
           </div>
         </div>
         
-        <div className="bg-dark-card rounded-lg border border-dark-lightest p-4">
+        <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
           <div className="flex items-center">
             <div className="p-3 rounded-lg bg-yellow-500/20 text-yellow-400 mr-3">
               <FaFileAlt />
             </div>
             <div>
               <p className="text-gray-400 text-xs">Resumes</p>
-              <p className="text-white text-xl font-semibold">{resumeList.length}</p>
+              <p className="text-gray-800 text-xl font-semibold">{resumeList.length}</p>
             </div>
           </div>
         </div>
@@ -2578,7 +2581,7 @@ const ResumeGenerator = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button
             onClick={() => navigate('/admin/profile')}
-            className="bg-dark-card rounded-lg p-4 border border-blue-500/10 hover:border-blue-500/30 transition-all flex items-center"
+            className="bg-white rounded-lg p-4 border border-red-100 hover:border-red-300 transition-all flex items-center shadow-sm"
           >
             <FaUser className="text-blue-500 mr-3" />
             <span>Update Profile</span>
@@ -2586,7 +2589,7 @@ const ResumeGenerator = () => {
           
           <button
             onClick={() => navigate('/admin/skills')}
-            className="bg-dark-card rounded-lg p-4 border border-green-500/10 hover:border-green-500/30 transition-all flex items-center"
+            className="bg-white rounded-lg p-4 border border-green-100 hover:border-green-300 transition-all flex items-center shadow-sm"
           >
             <FaCode className="text-green-500 mr-3" />
             <span>Manage Skills</span>
@@ -2594,7 +2597,7 @@ const ResumeGenerator = () => {
           
           <button
             onClick={() => navigate('/admin/experience')}
-            className="bg-dark-card rounded-lg p-4 border border-purple-500/10 hover:border-purple-500/30 transition-all flex items-center"
+            className="bg-white rounded-lg p-4 border border-purple-100 hover:border-purple-300 transition-all flex items-center shadow-sm"
           >
             <FaBriefcase className="text-purple-500 mr-3" />
             <span>Update Experience</span>

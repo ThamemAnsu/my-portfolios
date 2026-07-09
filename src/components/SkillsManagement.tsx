@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaPlus, FaEdit, FaTrash, FaArrowUp, FaArrowDown, FaCode, FaServer, FaTools } from 'react-icons/fa';
 import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase client
-const supabaseUrl = 'https://tscpiiiregsqkvztjxba.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzY3BpaWlyZWdzcWt2enRqeGJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAyMDk3NzcsImV4cCI6MjA3NTc4NTc3N30._4oCoWFMwwBOgh5_OtZM4i-fg-XYvYaw4frKQN77zIY';
+const supabaseUrl = 'https://redekfpzbqdlhhcsnxpi.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZGVrZnB6YnFkbGhoY3NueHBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4MzIxMjgsImV4cCI6MjA5ODQwODEyOH0._txyfFm7GE2fL9QgcgnuBJoPb2S3zu_1nixDed69kac';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 interface Skill {
@@ -153,7 +152,7 @@ const SkillsManagement: React.FC = () => {
   return (
     <div className="container px-4 py-8 mx-auto">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-white">Skills Management</h1>
+        <h1 className="text-3xl font-bold text-gray-800">Skills Management</h1>
         <button
           onClick={handleAddNew}
           className="bg-secondary hover:bg-secondary-dark text-white px-4 py-2 rounded-lg flex items-center transition-colors"
@@ -172,7 +171,7 @@ const SkillsManagement: React.FC = () => {
             className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center ${
               activeCategory === category
                 ? 'bg-secondary text-white'
-                : 'bg-dark-lightest text-gray-300 hover:bg-dark-lighter'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
             {category !== 'all' && (
@@ -212,7 +211,7 @@ const SkillsManagement: React.FC = () => {
               </div>
               
               <div className="flex-1">
-                <h3 className="font-semibold text-white text-lg">{skill.name}</h3>
+                <h3 className="font-semibold text-gray-800 text-lg">{skill.name}</h3>
                 <div className="flex items-center mt-2">
                   <div className="w-full bg-dark-lightest rounded-full h-2">
                     <div 
@@ -232,21 +231,21 @@ const SkillsManagement: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => moveSkill(skill.id, 'up')}
-                  className="p-2 rounded hover:bg-dark-lightest text-gray-400 hover:text-white transition-colors"
+                  className="p-2 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
                   title="Move Up"
                 >
                   <FaArrowUp />
                 </button>
                 <button
                   onClick={() => moveSkill(skill.id, 'down')}
-                  className="p-2 rounded hover:bg-dark-lightest text-gray-400 hover:text-white transition-colors"
+                  className="p-2 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
                   title="Move Down"
                 >
                   <FaArrowDown />
                 </button>
                 <button
                   onClick={() => handleEdit(skill.id)}
-                  className="p-2 rounded hover:bg-dark-lightest text-gray-400 hover:text-white transition-colors"
+                  className="p-2 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
                   title="Edit"
                 >
                   <FaEdit />
@@ -379,7 +378,7 @@ const SkillForm: React.FC<SkillFormProps> = ({ skillId, onClose }) => {
   
   return (
     <div className="container px-4 py-8 mx-auto">
-      <h1 className="text-3xl font-bold text-white mb-8">
+      <h1 className="text-3xl font-bold text-gray-800 mb-8">
         {skillId ? 'Edit Skill' : 'Add New Skill'}
       </h1>
       
@@ -462,7 +461,7 @@ const SkillForm: React.FC<SkillFormProps> = ({ skillId, onClose }) => {
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 bg-dark-lightest hover:bg-gray-600 text-white rounded-lg transition-colors"
+            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
           >
             Cancel
           </button>

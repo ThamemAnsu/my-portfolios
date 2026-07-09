@@ -8,8 +8,8 @@ import {
 import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase
-const supabaseUrl = 'https://tscpiiiregsqkvztjxba.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzY3BpaWlyZWdzcWt2enRqeGJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAyMDk3NzcsImV4cCI6MjA3NTc4NTc3N30._4oCoWFMwwBOgh5_OtZM4i-fg-XYvYaw4frKQN77zIY';
+const supabaseUrl = 'https://redekfpzbqdlhhcsnxpi.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZGVrZnB6YnFkbGhoY3NueHBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4MzIxMjgsImV4cCI6MjA5ODQwODEyOH0._txyfFm7GE2fL9QgcgnuBJoPb2S3zu_1nixDed69kac';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const Settings = () => {
@@ -134,7 +134,7 @@ const Settings = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B1528] via-[#0D1A2D] to-[#0B1528] p-8">
+    <div className="min-h-screen bg-[#F3F4F6] p-8">
       {/* Success/Error Messages */}
       <AnimatePresence>
         {successMessage && (
@@ -167,14 +167,14 @@ const Settings = () => {
         className="max-w-6xl mx-auto"
       >
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
-          <p className="text-gray-400">Manage your account settings and preferences</p>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Settings</h1>
+          <p className="text-gray-500">Manage your account settings and preferences</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-[#0E1A2E]/80 backdrop-blur-sm rounded-2xl border border-[#1C2636]/50 p-4 sticky top-8">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4 sticky top-8">
               <nav className="space-y-2">
                 {tabs.map((tab) => (
                   <motion.button
@@ -183,8 +183,8 @@ const Settings = () => {
                     whileHover={{ x: 4 }}
                     className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${
                       activeTab === tab.id
-                        ? 'bg-gradient-to-r from-[#3B82F6]/20 to-[#3B82F6]/5 text-[#3B82F6] border border-[#3B82F6]/20'
-                        : 'text-gray-400 hover:text-white hover:bg-[#16213E]/30'
+                        ? 'bg-red-50 text-red-600 border border-red-200 font-semibold'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                     }`}
                   >
                     <tab.icon className="text-lg" />
@@ -204,26 +204,26 @@ const Settings = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.2 }}
-                className="bg-[#0E1A2E]/80 backdrop-blur-sm rounded-2xl border border-[#1C2636]/50 p-8"
+                className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8"
               >
                 {/* Account Tab */}
                 {activeTab === 'account' && (
                   <div className="space-y-8">
                     <div>
-                      <h2 className="text-2xl font-bold text-white mb-2">Account Settings</h2>
-                      <p className="text-gray-400">Update your account information</p>
+                      <h2 className="text-2xl font-bold text-gray-800 mb-2">Account Settings</h2>
+                      <p className="text-gray-500">Update your account information</p>
                     </div>
 
                     <div className="space-y-6">
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <label className="block text-sm font-medium text-gray-600 mb-2">
                           Email Address
                         </label>
                         <input
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          className="w-full px-4 py-3 bg-[#0A1324] border border-[#1C2636] rounded-xl text-white focus:outline-none focus:border-[#3B82F6] transition-all"
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all"
                           placeholder="your@email.com"
                         />
                         <p className="text-xs text-gray-500 mt-2">
@@ -253,13 +253,13 @@ const Settings = () => {
                 {activeTab === 'security' && (
                   <div className="space-y-8">
                     <div>
-                      <h2 className="text-2xl font-bold text-white mb-2">Security Settings</h2>
+                      <h2 className="text-2xl font-bold text-gray-800 mb-2">Security Settings</h2>
                       <p className="text-gray-400">Keep your account secure</p>
                     </div>
 
                     <div className="space-y-6">
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <label className="block text-sm font-medium text-gray-600 mb-2">
                           Current Password
                         </label>
                         <div className="relative">
@@ -267,13 +267,13 @@ const Settings = () => {
                             type={showPassword ? 'text' : 'password'}
                             value={currentPassword}
                             onChange={(e) => setCurrentPassword(e.target.value)}
-                            className="w-full px-4 py-3 bg-[#0A1324] border border-[#1C2636] rounded-xl text-white focus:outline-none focus:border-[#3B82F6] transition-all pr-12"
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all pr-12"
                             placeholder="Enter current password"
                           />
                           <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
                           >
                             {showPassword ? <FaEyeSlash /> : <FaEye />}
                           </button>
@@ -281,27 +281,27 @@ const Settings = () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <label className="block text-sm font-medium text-gray-600 mb-2">
                           New Password
                         </label>
                         <input
                           type={showPassword ? 'text' : 'password'}
                           value={newPassword}
                           onChange={(e) => setNewPassword(e.target.value)}
-                          className="w-full px-4 py-3 bg-[#0A1324] border border-[#1C2636] rounded-xl text-white focus:outline-none focus:border-[#3B82F6] transition-all"
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all"
                           placeholder="Enter new password"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <label className="block text-sm font-medium text-gray-600 mb-2">
                           Confirm New Password
                         </label>
                         <input
                           type={showPassword ? 'text' : 'password'}
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
-                          className="w-full px-4 py-3 bg-[#0A1324] border border-[#1C2636] rounded-xl text-white focus:outline-none focus:border-[#3B82F6] transition-all"
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all"
                           placeholder="Confirm new password"
                         />
                       </div>
@@ -328,7 +328,7 @@ const Settings = () => {
                 {activeTab === 'notifications' && (
                   <div className="space-y-8">
                     <div>
-                      <h2 className="text-2xl font-bold text-white mb-2">Notification Preferences</h2>
+                      <h2 className="text-2xl font-bold text-gray-800 mb-2">Notification Preferences</h2>
                       <p className="text-gray-400">Manage how you receive updates</p>
                     </div>
 
@@ -342,7 +342,7 @@ const Settings = () => {
                         <motion.div
                           key={key}
                           whileHover={{ x: 4 }}
-                          className="flex items-center justify-between p-4 bg-[#0A1324]/50 border border-[#1C2636] rounded-xl"
+                          className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-xl"
                         >
                           <div>
                             <p className="text-white font-medium">{label}</p>
@@ -356,7 +356,7 @@ const Settings = () => {
                           <button
                             onClick={() => setNotifications({ ...notifications, [key]: !notifications[key] })}
                             className={`relative w-14 h-7 rounded-full transition-colors ${
-                              notifications[key] ? 'bg-[#3B82F6]' : 'bg-gray-600'
+                              notifications[key] ? 'bg-red-500' : 'bg-gray-300'
                             }`}
                           >
                             <motion.div
@@ -374,7 +374,7 @@ const Settings = () => {
                       disabled={loading}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="flex items-center space-x-2 px-6 py-3 bg-[#3B82F6] hover:bg-[#2563EB] text-white rounded-xl font-medium shadow-lg transition-all"
+                      className="flex items-center space-x-2 px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium shadow-md shadow-red-500/20 transition-all"
                     >
                       <FaSave />
                       <span>Save Preferences</span>
@@ -386,13 +386,13 @@ const Settings = () => {
                 {activeTab === 'appearance' && (
                   <div className="space-y-8">
                     <div>
-                      <h2 className="text-2xl font-bold text-white mb-2">Appearance Settings</h2>
+                      <h2 className="text-2xl font-bold text-gray-800 mb-2">Appearance Settings</h2>
                       <p className="text-gray-400">Customize how your admin panel looks</p>
                     </div>
 
                     <div className="space-y-6">
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-3">
+                        <label className="block text-sm font-medium text-gray-600 mb-3">
                           Theme
                         </label>
                         <div className="grid grid-cols-2 gap-4">
@@ -403,18 +403,18 @@ const Settings = () => {
                               whileHover={{ scale: 1.02 }}
                               className={`p-4 rounded-xl border-2 transition-all ${
                                 appearance.theme === theme
-                                  ? 'border-[#3B82F6] bg-[#3B82F6]/10'
+                                  ? 'border-red-500 bg-red-50'
                                   : 'border-[#1C2636] hover:border-[#3B82F6]/50'
                               }`}
                             >
-                              <div className="text-white font-medium capitalize">{theme}</div>
+                              <div className="text-gray-800 font-medium capitalize">{theme}</div>
                             </motion.button>
                           ))}
                         </div>
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-3">
+                        <label className="block text-sm font-medium text-gray-600 mb-3">
                           Accent Color
                         </label>
                         <div className="grid grid-cols-4 gap-3">
@@ -443,16 +443,16 @@ const Settings = () => {
 
                       <motion.div
                         whileHover={{ x: 4 }}
-                        className="flex items-center justify-between p-4 bg-[#0A1324]/50 border border-[#1C2636] rounded-xl"
+                        className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-xl"
                       >
                         <div>
-                          <p className="text-white font-medium">Compact Mode</p>
+                          <p className="text-gray-800 font-medium">Compact Mode</p>
                           <p className="text-sm text-gray-400">Reduce spacing for a denser layout</p>
                         </div>
                         <button
                           onClick={() => setAppearance({ ...appearance, compactMode: !appearance.compactMode })}
                           className={`relative w-14 h-7 rounded-full transition-colors ${
-                            appearance.compactMode ? 'bg-[#3B82F6]' : 'bg-gray-600'
+                            appearance.compactMode ? 'bg-red-500' : 'bg-gray-300'
                           }`}
                         >
                           <motion.div
@@ -469,7 +469,7 @@ const Settings = () => {
                       disabled={loading}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="flex items-center space-x-2 px-6 py-3 bg-[#3B82F6] hover:bg-[#2563EB] text-white rounded-xl font-medium shadow-lg transition-all"
+                      className="flex items-center space-x-2 px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium shadow-md shadow-red-500/20 transition-all"
                     >
                       <FaSave />
                       <span>Save Appearance</span>
@@ -481,18 +481,18 @@ const Settings = () => {
                 {activeTab === 'data' && (
                   <div className="space-y-8">
                     <div>
-                      <h2 className="text-2xl font-bold text-white mb-2">Data Management</h2>
+                      <h2 className="text-2xl font-bold text-gray-800 mb-2">Data Management</h2>
                       <p className="text-gray-400">Export or delete your portfolio data</p>
                     </div>
 
                     <div className="space-y-4">
                       <motion.div
                         whileHover={{ x: 4 }}
-                        className="p-6 bg-[#0A1324]/50 border border-[#1C2636] rounded-xl"
+                        className="p-6 bg-gray-50 border border-gray-200 rounded-xl"
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
-                            <h3 className="text-white font-semibold mb-2 flex items-center">
+                            <h3 className="text-gray-800 font-semibold mb-2 flex items-center">
                               <FaDownload className="mr-2 text-[#3B82F6]" />
                               Export Your Data
                             </h3>
@@ -503,7 +503,7 @@ const Settings = () => {
                               onClick={handleExportData}
                               whileHover={{ scale: 1.02 }}
                               whileTap={{ scale: 0.98 }}
-                              className="flex items-center space-x-2 px-4 py-2 bg-[#3B82F6] hover:bg-[#2563EB] text-white rounded-lg font-medium transition-all"
+                              className="flex items-center space-x-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-all"
                             >
                               <FaDownload />
                               <span>Export Data</span>
@@ -518,7 +518,7 @@ const Settings = () => {
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
-                            <h3 className="text-white font-semibold mb-2 flex items-center">
+                            <h3 className="text-gray-800 font-semibold mb-2 flex items-center">
                               <FaTrash className="mr-2 text-red-400" />
                               Danger Zone
                             </h3>

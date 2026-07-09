@@ -5,8 +5,8 @@ import { FaPlus, FaEdit, FaTrash, FaArrowUp, FaArrowDown, FaBuilding, FaCalendar
 import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase client
-const supabaseUrl = 'https://tscpiiiregsqkvztjxba.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzY3BpaWlyZWdzcWt2enRqeGJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAyMDk3NzcsImV4cCI6MjA3NTc4NTc3N30._4oCoWFMwwBOgh5_OtZM4i-fg-XYvYaw4frKQN77zIY';
+const supabaseUrl = 'https://redekfpzbqdlhhcsnxpi.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZGVrZnB6YnFkbGhoY3NueHBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4MzIxMjgsImV4cCI6MjA5ODQwODEyOH0._txyfFm7GE2fL9QgcgnuBJoPb2S3zu_1nixDed69kac';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 interface Experience {
@@ -114,7 +114,7 @@ const ExperienceManagement: React.FC = () => {
   return (
     <div className="container px-4 py-8 mx-auto">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-white">Experience Management</h1>
+        <h1 className="text-3xl font-bold text-gray-800">Experience Management</h1>
         <button
           onClick={() => navigate('/admin/experience/new')}
           className="bg-secondary hover:bg-secondary-dark text-white px-4 py-2 rounded-lg flex items-center transition-colors"
@@ -152,7 +152,7 @@ const ExperienceManagement: React.FC = () => {
               <div className="absolute right-4 top-4 flex space-x-2">
                 <button
                   onClick={() => moveExperience(experience.id, 'up')}
-                  className="p-2 rounded hover:bg-dark-lightest text-gray-400 hover:text-white transition-colors"
+                  className="p-2 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
                   title="Move Up"
                   disabled={experiences.indexOf(experience) === 0}
                 >
@@ -160,7 +160,7 @@ const ExperienceManagement: React.FC = () => {
                 </button>
                 <button
                   onClick={() => moveExperience(experience.id, 'down')}
-                  className="p-2 rounded hover:bg-dark-lightest text-gray-400 hover:text-white transition-colors"
+                  className="p-2 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
                   title="Move Down"
                   disabled={experiences.indexOf(experience) === experiences.length - 1}
                 >
@@ -168,7 +168,7 @@ const ExperienceManagement: React.FC = () => {
                 </button>
                 <button
                   onClick={() => navigate(`/admin/experience/edit/${experience.id}`)}
-                  className="p-2 rounded hover:bg-dark-lightest text-gray-400 hover:text-white transition-colors"
+                  className="p-2 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
                   title="Edit"
                 >
                   <FaEdit />
@@ -190,7 +190,7 @@ const ExperienceManagement: React.FC = () => {
                 </div>
                 
                 <div className="md:w-3/4">
-                  <h3 className="text-2xl font-bold text-white mb-1">{experience.role}</h3>
+                  <h3 className="text-2xl font-bold text-gray-800 mb-1">{experience.role}</h3>
                   <h4 className="text-xl text-secondary-light mb-3">
                     {experience.company_url ? (
                       <a 
@@ -429,7 +429,7 @@ const ExperienceForm: React.FC = () => {
   
   return (
     <div className="container px-4 py-8 mx-auto">
-      <h1 className="text-3xl font-bold text-white mb-8">
+      <h1 className="text-3xl font-bold text-gray-800 mb-8">
         {id ? 'Edit Experience' : 'Add New Experience'}
       </h1>
       
@@ -547,7 +547,7 @@ const ExperienceForm: React.FC = () => {
               {descriptionItems.map((item, index) => (
                 <li key={index} className="flex items-start group">
                   <span className="text-secondary-light mr-2 mt-1">▹</span>
-                  <div className="flex-1 text-white">{item}</div>
+                  <div className="flex-1 text-gray-700">{item}</div>
                   <button
                     type="button"
                     onClick={() => removeDescriptionItem(index)}
@@ -566,7 +566,7 @@ const ExperienceForm: React.FC = () => {
                 value={newDescriptionItem}
                 onChange={(e) => setNewDescriptionItem(e.target.value)}
                 placeholder="Add a description point..."
-                className="flex-1 px-3 py-2 bg-dark-lighter border border-dark-lightest rounded-l-lg text-white focus:outline-none focus:ring-1 focus:ring-secondary focus:border-secondary"
+                className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-l-lg text-gray-800 focus:outline-none focus:ring-1 focus:ring-red-400 focus:border-red-400"
               />
               <button
                 type="button"
@@ -587,7 +587,7 @@ const ExperienceForm: React.FC = () => {
           <div className="bg-dark-lightest border border-dark-lightest rounded-lg p-4 mb-2">
             <div className="flex flex-wrap gap-2 mb-4">
               {technologyItems.map((tech, index) => (
-                <div key={index} className="flex items-center bg-dark-lighter text-white px-3 py-1 rounded-full">
+                <div key={index} className="flex items-center bg-gray-100 text-gray-700 px-3 py-1 rounded-full">
                   <span>{tech}</span>
                   <button
                     type="button"
@@ -610,7 +610,7 @@ const ExperienceForm: React.FC = () => {
                 value={newTechnologyItem}
                 onChange={(e) => setNewTechnologyItem(e.target.value)}
                 placeholder="Add a technology..."
-                className="flex-1 px-3 py-2 bg-dark-lighter border border-dark-lightest rounded-l-lg text-white focus:outline-none focus:ring-1 focus:ring-secondary focus:border-secondary"
+                className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-l-lg text-gray-800 focus:outline-none focus:ring-1 focus:ring-red-400 focus:border-red-400"
               />
               <button
                 type="button"
@@ -630,7 +630,7 @@ const ExperienceForm: React.FC = () => {
           <button
             type="button"
             onClick={() => navigate('/admin/experience')}
-            className="px-4 py-2 bg-dark-lightest hover:bg-gray-600 text-white rounded-lg transition-colors"
+            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
           >
             Cancel
           </button>
